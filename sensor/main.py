@@ -1,6 +1,18 @@
+import datetime
+import os
 import time
 
 import minimalmodbus
+import psycopg2
+
+conn = psycopg2.connect(database=os.environ["POSTGRES_DB"],
+                        host=os.environ["POSTGRES_HOST"],
+                        user=os.environ["POSTGRES_USER"],
+                        password=os.environ["POSTGRES_PASSWORD"],
+                        port=os.environ["POSTGRES_PORT"])
+
+cursor = conn.cursor()
+
 
 def convert_values(values: list[int]):
     return {
@@ -16,7 +28,7 @@ def convert_values(values: list[int]):
     }
 
 
-PORT = 'COM8'
+PORT = os.environ["SERIAL_PORT"]
 instrument = minimalmodbus.Instrument(PORT, 1, mode=minimalmodbus.MODE_RTU, debug=True)
 
 instrument.serial.baudrate = 4800
@@ -31,5 +43,10 @@ instrument.clear_buffers_before_each_transaction = True
 
 while True:
     raw_values = instrument.read_registers(0, number_of_registers=9)
-    print(convert_values(raw_values))
+    timestamp = datetime.datetime.now().isoformat()
+    processed_values = convert_values(raw_values)
+    for key, value in processed_values.items():
+        cursor.execute(
+            f"INSERT INTO sensor_data (sensor_name, timestamp, sensor_value) VALUES ('{key}', '{timestamp}', {value})")
+    conn.commit()
     time.sleep(3)
