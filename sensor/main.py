@@ -1,9 +1,12 @@
 import datetime
 import os
 import time
+from dotenv import load_dotenv
 
 import minimalmodbus
 import psycopg2
+
+load_dotenv()
 
 conn = psycopg2.connect(database=os.environ["POSTGRES_DB"],
                         host=os.environ["POSTGRES_HOST"],
@@ -14,7 +17,7 @@ conn = psycopg2.connect(database=os.environ["POSTGRES_DB"],
 cursor = conn.cursor()
 
 
-def convert_values(values: list[int]):
+def convert_values(values):
     return {
         "humidity": values[0] / 10,  # percentage
         "temperature": values[1] / 10,  # celsius
@@ -29,7 +32,7 @@ def convert_values(values: list[int]):
 
 
 PORT = os.environ["SERIAL_PORT"]
-instrument = minimalmodbus.Instrument(PORT, 1, mode=minimalmodbus.MODE_RTU, debug=True)
+instrument = minimalmodbus.Instrument(PORT, 1, mode=minimalmodbus.MODE_RTU)
 
 instrument.serial.baudrate = 4800
 instrument.serial.bytesize = 8
@@ -41,12 +44,11 @@ instrument.close_port_after_each_call = True
 
 instrument.clear_buffers_before_each_transaction = True
 
-while True:
-    raw_values = instrument.read_registers(0, number_of_registers=9)
-    timestamp = datetime.datetime.now().isoformat()
-    processed_values = convert_values(raw_values)
-    for key, value in processed_values.items():
-        cursor.execute(
-            f"INSERT INTO sensor_data (sensor_name, timestamp, sensor_value) VALUES ('{key}', '{timestamp}', {value})")
-    conn.commit()
-    time.sleep(3)
+raw_values = instrument.read_registers(0, number_of_registers=9)
+timestamp = datetime.datetime.now().isoformat()
+processed_values = convert_values(raw_values)
+
+for key, value in processed_values.items():
+	cursor.execute(f"INSERT INTO sensor_data (sensor_name, timestamp, sensor_value) VALUES ('{key}', '{timestamp}', {value})")
+
+conn.commit()
