@@ -10,7 +10,6 @@ const columnDefinition: GridColDef<SensorData>[] = [
 
 function TableView({data, isError, isLoading}: DataView) {
     return <div>
-        Table View
         {isLoading && (
             <p>Loading...</p>
         )}
