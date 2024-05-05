@@ -13,12 +13,12 @@ router.get(
     getData,
 );
 router.get(
-    '/api/data/:sensorId',
+    '/api/data/:sensorName',
     getSensorData,
 );
 
 router.post(
-    '/api/data/:sensorId/emails',
+    '/api/data/:sensorName/',
     saveSensorData,
 );
 

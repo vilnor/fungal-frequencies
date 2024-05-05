@@ -19,8 +19,8 @@ export async function getData(req: Request, res: Response) {
 
 export async function getSensorData(req: Request, res: Response) {
     const { rows } = await pool.query(
-        'SELECT * from sensor_data WHERE sensor = $1',
-        [req.params.sensorId]
+        'SELECT * from sensor_data WHERE sensor_name = $1',
+        [req.params.sensorName]
     );
     res.send(rows);
 }
