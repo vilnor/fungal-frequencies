@@ -40,14 +40,14 @@ function App() {
     return (
         <div className="App">
             <Tabs value={tabValue} onChange={(e, nV) => setTabValue(nV)}>
-                <Tab label="Table View" />
                 <Tab label="Chart View" />
+                <Tab label="Table View" />
             </Tabs>
             <CustomTabPanel value={tabValue} index={0} >
-                <TableView data={data} isError={isError} isLoading={isLoading} />
+                <ChartView data={data} isError={isError} isLoading={isLoading} />
             </CustomTabPanel>
             <CustomTabPanel value={tabValue} index={1} >
-                <ChartView data={data} isError={isError} isLoading={isLoading} />
+                <TableView data={data} isError={isError} isLoading={isLoading} />
             </CustomTabPanel>
         </div>
     );
