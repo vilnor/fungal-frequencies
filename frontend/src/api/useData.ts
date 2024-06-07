@@ -1,7 +1,7 @@
 import useSWR, { Fetcher } from 'swr';
 import { SensorData } from '../types';
 
-const ENDPOINT = `${process.env.REACT_APP_API_URL}/api/data`;
+const ENDPOINT = 'http://192.168.3.85:8081/api/data';
 
 const fetcher: Fetcher<SensorData[], string> = (...args) => fetch(...args).then(res => res.json());
 
