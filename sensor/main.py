@@ -1,6 +1,5 @@
 import datetime
 import os
-import time
 from dotenv import load_dotenv
 
 import minimalmodbus
@@ -32,23 +31,31 @@ def convert_values(values):
 
 
 PORT = os.environ["SERIAL_PORT"]
-instrument = minimalmodbus.Instrument(PORT, 1, mode=minimalmodbus.MODE_RTU)
 
-instrument.serial.baudrate = 4800
-instrument.serial.bytesize = 8
-instrument.serial.parity = minimalmodbus.serial.PARITY_NONE
-instrument.serial.stopbits = 1
-instrument.serial.timeout = 5
+sensor_1 = minimalmodbus.Instrument(PORT, 1, mode=minimalmodbus.MODE_RTU)
+sensor_2 = minimalmodbus.Instrument(PORT, 2, mode=minimalmodbus.MODE_RTU)
+sensor_3 = minimalmodbus.Instrument(PORT, 3, mode=minimalmodbus.MODE_RTU)
+sensor_4 = minimalmodbus.Instrument(PORT, 4, mode=minimalmodbus.MODE_RTU)
+sensor_5 = minimalmodbus.Instrument(PORT, 5, mode=minimalmodbus.MODE_RTU)
 
-instrument.close_port_after_each_call = True
+sensors = [sensor_1, sensor_2, sensor_3, sensor_4, sensor_5]
 
-instrument.clear_buffers_before_each_transaction = True
+for sensor in sensors:
+    sensor.serial.baudrate = 4800
+    sensor.serial.bytesize = 8
+    sensor.serial.parity = minimalmodbus.serial.PARITY_NONE
+    sensor.serial.stopbits = 1
+    sensor.serial.timeout = 5
+    sensor.close_port_after_each_call = True
+    sensor.clear_buffers_before_each_transaction = True
 
-raw_values = instrument.read_registers(0, number_of_registers=9)
 timestamp = datetime.datetime.now().isoformat()
-processed_values = convert_values(raw_values)
 
-for key, value in processed_values.items():
-	cursor.execute(f"INSERT INTO sensor_data (sensor_name, timestamp, sensor_value) VALUES ('{key}', '{timestamp}', {value})")
+for i, sensor in enumerate(sensors):
+    raw_values = sensor.read_registers(0, number_of_registers=9)
+    processed_values = convert_values(raw_values)
+    for key, value in processed_values.items():
+        cursor.execute(
+            f"INSERT INTO sensor_data (sensor_id, sensor_name, timestamp, sensor_value) VALUES ({i + 1}, '{key}', '{timestamp}', {value})")
 
 conn.commit()
