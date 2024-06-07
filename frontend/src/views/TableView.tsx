@@ -5,6 +5,7 @@ import React from 'react';
 const columnDefinition: GridColDef<SensorData>[] = [
     {field: 'timestamp', headerName: 'Time', flex: 1, type: 'dateTime', valueGetter: (v) => new Date(v)},
     {field: 'sensor_name', headerName: 'Sensor', flex: 1, type: 'string'},
+    {field: 'sensor_id', headerName: 'Sensor ID', flex: 1, type: 'number'},
     {field: 'sensor_value', headerName: 'Value', flex: 1, type: 'number'},
 ];
 
@@ -17,7 +18,7 @@ function TableView({data, isError, isLoading}: DataView) {
             <DataGrid
                 columns={columnDefinition}
                 rows={data}
-                getRowId={(r) => r.sensor_name + r.timestamp}
+                getRowId={(r) => r.sensor_name + r.timestamp + `${r.sensor_id}`}
                 slots={{toolbar: GridToolbar}}
             />
         )}

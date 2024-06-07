@@ -15,22 +15,32 @@ const chartColourMap: {[k: string]: string} = {
 	salinity: '#ff8400'
 };
 
-function transformDataToHighcharts(data: SensorData[]): { name: string, data: any[], color: string }[] {
-    return data.reduce((acc: { name: string, data: any[], color: string }[], curr) => {
-        const index = acc.findIndex(item => item.name === curr.sensor_name);
-        if (index === -1) {
-            acc.push({
-                name: curr.sensor_name,
+function transformDataToHighcharts(data: SensorData[]): {[k: string]: { name: string, data: any[], color: string }[]} {
+    return data.reduce((acc: {[k: string]: { name: string, data: any[], color: string }[]}, curr) => {
+        const sensorName = curr.sensor_name;
+        const sensorId = curr.sensor_id;
+        const sensorKey = `sensor-${sensorId}`;
+
+        if (!acc[sensorName]) {
+            acc[sensorName] = [];
+        }
+
+        const sensorIndex = acc[sensorName].findIndex(item => item.name === sensorKey);
+
+        if (sensorIndex === -1) {
+            acc[sensorName].push({
+                name: sensorKey,
                 data: [[new Date(curr.timestamp).getTime(), curr.sensor_value]],
-		color: chartColourMap[curr.sensor_name],
+                color: chartColourMap[sensorName],
             });
         } else {
-            acc[index].data.push([new Date(curr.timestamp).getTime(), curr.sensor_value]);
+            acc[sensorName][sensorIndex].data.push([new Date(curr.timestamp).getTime(), curr.sensor_value]);
         }
-        return acc;
-    }, []);
 
+        return acc;
+    }, {});
 }
+
 
 function ChartView({data, isError, isLoading}: DataView) {
     const series = useMemo(() => !!data ? transformDataToHighcharts(data) : [], [data]);
@@ -40,13 +50,13 @@ function ChartView({data, isError, isLoading}: DataView) {
         )}
         <Grid container rowSpacing={1} columnSpacing={1}>
         {!isLoading && !isError && (
-            series.map((conf) => (
+            Object.entries(series).map(([name, conf]) => (
                 <Grid xs={4}>
                     <HighchartsReact
                         highcharts={Highcharts}
                         options={{
                             title: {
-                                text: conf.name
+                                text: name
                             },
                             time: {
                                 useUTC: false,
@@ -57,7 +67,7 @@ function ChartView({data, isError, isLoading}: DataView) {
                             xAxis: {
                                 type: 'datetime'
                             },
-                            series: [conf]
+                            series: conf
                         }}
                     />
                 </Grid>

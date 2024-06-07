@@ -1,6 +1,8 @@
 import useSWR, { Fetcher } from 'swr';
 import { SensorData } from '../types';
 
+console.log(process.env.REACT_APP_API_URL);
+
 const ENDPOINT = `${process.env.REACT_APP_API_URL}/api/data`;
 
 const fetcher: Fetcher<SensorData[], string> = (...args) => fetch(...args).then(res => res.json());
