@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import { config } from 'dotenv'
+import path from 'path';
 
 config();
 
@@ -14,5 +15,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 app.use(router);
+app.use('/', express.static(path.join(__dirname, '../../frontend/build')));
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
