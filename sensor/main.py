@@ -5,15 +5,23 @@ from dotenv import load_dotenv
 import minimalmodbus
 import psycopg2
 
+import requests
+
 load_dotenv()
 
-conn = psycopg2.connect(database=os.environ["POSTGRES_DB"],
-                        host=os.environ["POSTGRES_HOST"],
-                        user=os.environ["POSTGRES_USER"],
-                        password=os.environ["POSTGRES_PASSWORD"],
-                        port=os.environ["POSTGRES_PORT"])
+data_endpoint_url = os.environ["DATA_ENDPOINT_URL"]
 
-cursor = conn.cursor()
+conn = None
+cursor = None
+
+if data_endpoint_url is None:
+    conn = psycopg2.connect(database=os.environ["POSTGRES_DB"],
+                            host=os.environ["POSTGRES_HOST"],
+                            user=os.environ["POSTGRES_USER"],
+                            password=os.environ["POSTGRES_PASSWORD"],
+                            port=os.environ["POSTGRES_PORT"])
+
+    cursor = conn.cursor()
 
 
 def convert_values(values):
@@ -50,12 +58,28 @@ for sensor in sensors:
     sensor.clear_buffers_before_each_transaction = True
 
 timestamp = datetime.datetime.now().isoformat()
+sensor_data_list = []
 
 for i, sensor in enumerate(sensors):
     raw_values = sensor.read_registers(0, number_of_registers=9)
     processed_values = convert_values(raw_values)
     for key, value in processed_values.items():
-        cursor.execute(
-            f"INSERT INTO sensor_data (sensor_id, sensor_name, timestamp, sensor_value) VALUES ({i + 1}, '{key}', '{timestamp}', {value})")
+        sensor_data = {
+            "sensor_id": i + 1,
+            "sensor_name": key,
+            "timestamp": timestamp,
+            "sensor_value": value
+        }
+        sensor_data_list.append(sensor_data)
 
-conn.commit()
+        if data_endpoint_url is None:
+            cursor.execute(
+                f"INSERT INTO sensor_data (sensor_id, sensor_name, timestamp, sensor_value) VALUES ({i + 1}, '{key}', '{timestamp}', {value})")
+
+if data_endpoint_url is not None:
+    print(sensor_data_list)
+    res = requests.post(data_endpoint_url, json=sensor_data_list)
+    print(res.text)
+
+if data_endpoint_url is None:
+    conn.commit()
