@@ -1,5 +1,11 @@
 import { Router } from 'express';
-import { getData, getHealth, getSensorData, saveSensorData } from './controllers';
+import {
+    getData,
+    getHealth,
+    getSensorData,
+    saveSensorData,
+    saveSensorDataMulti
+} from './controllers';
 
 const router = Router();
 
@@ -18,8 +24,13 @@ router.get(
 );
 
 router.post(
-    '/api/data',
+    '/api/data/single',
     saveSensorData,
 );
+
+router.post(
+    '/api/data',
+    saveSensorDataMulti,
+)
 
 export default router;
