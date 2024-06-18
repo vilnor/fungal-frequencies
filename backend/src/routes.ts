@@ -18,7 +18,7 @@ router.get(
 );
 
 router.post(
-    '/api/data/:sensorName/',
+    '/api/data',
     saveSensorData,
 );
 

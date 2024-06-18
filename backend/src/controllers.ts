@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import pool from './database';
+import { SensorDataBody, SensorId, SensorName } from "./types";
 
 export async function getHealth(_req: Request, res: Response) {
     try {
@@ -25,6 +26,34 @@ export async function getSensorData(req: Request, res: Response) {
     res.send(rows);
 }
 
-export async function saveSensorData(req: Request, res: Response) {
+export async function saveSensorData(req: Request<any, any, SensorDataBody>, res: Response) {
+    const {
+        sensor_id,
+        sensor_name,
+        sensor_value,
+        timestamp,
+    } = req.body;
+
+    if (!sensor_id || !sensor_name || !sensor_value || !timestamp) {
+        res.status(400).send('missing required fields');
+        return;
+    }
+
+    if (!(sensor_id in SensorId)) {
+        res.status(400).send('invalid sensor_id');
+        return;
+    }
+
+    // @ts-ignore
+    if (!(Object.values(SensorName).includes(sensor_name ))) {
+        res.status(400).send('invalid sensor_name');
+        return;
+    }
+
+    await pool.query<any, any>(
+        'INSERT INTO sensor_data (sensor_id, sensor_name, sensor_value, timestamp) VALUES ($1::integer, $2, $3::real, $4)',
+        [sensor_id, sensor_name, sensor_value, timestamp] as const
+    );
+
     res.send('ok');
 }
