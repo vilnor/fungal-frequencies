@@ -1,9 +1,11 @@
 import { SensorData } from '../types';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
-import { Box, Grid } from '@mui/material';
+import { Autocomplete, Box, Grid, TextField, Toolbar } from '@mui/material';
 import useData from '../api/useData';
+import { DateTimePicker } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
 
 const chartColourMap: { [k: string]: string } = {
     humidity: '#2095e3',
@@ -44,46 +46,120 @@ function transformDataToHighcharts(data: SensorData[]): {
     }, {});
 }
 
+const currentTime = new Date();
+
+const TIME_OPTIONS = [
+    { label: 'Last hour', value: 'hour' },
+    { label: 'Last day', value: 'day' },
+    { label: 'Last week', value: 'week' },
+    { label: 'Custom', value: 'custom' },
+];
+
 
 function ChartView() {
-    const { data, isError, isLoading } = useData();
+    const [timeRange, setTimeRange] = useState('day');
+    const [startTime, setStartTime] = useState<Dayjs | null>(null);
+    const [endTime, setEndTime] = useState<Dayjs | null>(null);
+    const { data, isError, isLoading } = useData(undefined, startTime?.toISOString(), endTime?.toISOString());
     const series = useMemo(() => !!data ? transformDataToHighcharts(data) : [], [data]);
+
+    useEffect(() => {
+        if (timeRange === 'hour') {
+            setStartTime(dayjs(currentTime).subtract(1, 'hour'));
+            setEndTime(null);
+        } else if (timeRange === 'day') {
+            setStartTime(dayjs(currentTime).subtract(1, 'day'));
+            setEndTime(null);
+        } else if (timeRange === 'week') {
+            setStartTime(dayjs(currentTime).subtract(1, 'week'));
+            setEndTime(null);
+        } else {
+            setStartTime(null);
+            setEndTime(null);
+        }
+    }, [timeRange]);
+
     return (
-        <Box sx={{ p: 5, height: '100%', overflow: 'auto' }}>
-            {isLoading && (
-                <p>Loading...</p>
-            )}
-            <Grid
-                container
-                rowSpacing={1}
-                columnSpacing={1}
-            >
-                {!isLoading && !isError && (
-                    Object.entries(series).map(([name, conf]) => (
-                        <Grid xs={12} md={6} lg={4}>
-                            <HighchartsReact
-                                highcharts={Highcharts}
-                                options={{
-                                    title: {
-                                        text: name,
-                                    },
-                                    time: {
-                                        useUTC: false,
-                                    },
-                                    chart: {
-                                        zoomType: 'x',
-                                    },
-                                    xAxis: {
-                                        type: 'datetime',
-                                    },
-                                    series: conf,
-                                }}
-                            />
-                        </Grid>
-                    ))
+        <>
+            <Toolbar sx={{ justifyContent: 'flex-end', gap: 1 }}>
+                {timeRange === 'custom' && (
+                    <>
+                        <DateTimePicker
+                            label="Start Time"
+                            value={startTime}
+                            onChange={setStartTime}
+                            slotProps={{
+                                textField: {
+                                    size: 'small',
+                                },
+                            }}
+                        />
+                        <DateTimePicker
+                            label="End Time"
+                            value={endTime}
+                            onChange={setEndTime}
+                            slotProps={{
+                                textField: {
+                                    size: 'small',
+                                },
+                            }}
+                        />
+                    </>
                 )}
-            </Grid>
-        </Box>
+                <Autocomplete
+                    value={TIME_OPTIONS.find(option => option.value === timeRange) ?? null}
+                    onChange={(_, value) => setTimeRange(value?.value ?? 'day')}
+                    options={TIME_OPTIONS}
+                    sx={{ width: 300 }}
+                    size="small"
+                    renderInput={
+                        (params) => <TextField
+                            {...params}
+                            label="Time Range"
+                        />
+                    }
+                />
+            </Toolbar>
+            <Box sx={{ p: 5, height: '100%', overflow: 'auto' }}>
+                {isLoading && (
+                    <p>Loading...</p>
+                )}
+                <Grid
+                    container
+                    rowSpacing={1}
+                    columnSpacing={1}
+                >
+                    {!isLoading && !isError && (
+                        Object.entries(series).map(([name, conf]) => (
+                            <Grid
+                                xs={12}
+                                md={6}
+                                lg={4}
+                            >
+                                <HighchartsReact
+                                    highcharts={Highcharts}
+                                    options={{
+                                        title: {
+                                            text: name,
+                                        },
+                                        time: {
+                                            useUTC: false,
+                                        },
+                                        chart: {
+                                            zoomType: 'x',
+                                        },
+                                        xAxis: {
+                                            type: 'datetime',
+                                        },
+                                        series: conf,
+                                    }}
+                                />
+                            </Grid>
+                        ))
+                    )}
+                </Grid>
+            </Box>
+        </>
     );
 }
 

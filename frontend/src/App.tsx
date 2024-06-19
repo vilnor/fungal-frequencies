@@ -3,6 +3,8 @@ import './App.css';
 import { AppBar, Box, Button, CssBaseline, PaletteMode, ThemeProvider, Toolbar, Typography } from '@mui/material';
 import { useTheme } from './theme';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 function App() {
     const [mode, setMode] = useState<PaletteMode>('light');
@@ -10,42 +12,44 @@ function App() {
 
     const navigate = useNavigate();
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline/>
-            <AppBar
-                position="absolute"
-                elevation={0}
-            >
-                <Toolbar>
-                    <Typography
-                        variant="h5"
-                        component="div"
-                        sx={{ flexGrow: 1 }}
-                    >Biome Data</Typography>
-                    <Button
-                        color="inherit"
-                        onClick={() => navigate('/')}
-                    >Chart View</Button>
-                    <Button
-                        color="inherit"
-                        onClick={() => navigate('/table')}
-                    >Table View</Button>
-                </Toolbar>
-            </AppBar>
-            <Box
-                component="main"
-                sx={{
-                    bgcolor: 'background.default',
-                    height: '100vh',
-                    overflow: 'auto',
-                    display: 'flex',
-                    flexDirection: 'column',
-                }}
-            >
-                <Toolbar/>
-                <Outlet/>
-            </Box>
-        </ThemeProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline/>
+                <AppBar
+                    position="absolute"
+                    elevation={0}
+                >
+                    <Toolbar>
+                        <Typography
+                            variant="h5"
+                            component="div"
+                            sx={{ flexGrow: 1 }}
+                        >Biome Data</Typography>
+                        <Button
+                            color="inherit"
+                            onClick={() => navigate('/')}
+                        >Chart View</Button>
+                        <Button
+                            color="inherit"
+                            onClick={() => navigate('/table')}
+                        >Table View</Button>
+                    </Toolbar>
+                </AppBar>
+                <Box
+                    component="main"
+                    sx={{
+                        bgcolor: 'background.default',
+                        height: '100vh',
+                        overflow: 'auto',
+                        display: 'flex',
+                        flexDirection: 'column',
+                    }}
+                >
+                    <Toolbar/>
+                    <Outlet/>
+                </Box>
+            </ThemeProvider>
+        </LocalizationProvider>
     );
 }
 

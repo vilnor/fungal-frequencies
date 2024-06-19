@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import pool from './database';
-import { SensorDataBody, SensorId, SensorName } from "./types";
+import { SensorDataBody, SensorDataQueryParams, SensorId, SensorName } from './types';
 
 export async function getHealth(_req: Request, res: Response) {
     try {
@@ -11,17 +11,34 @@ export async function getHealth(_req: Request, res: Response) {
     }
 }
 
-export async function getData(req: Request, res: Response) {
+export async function getData(req: Request<any, any, any, SensorDataQueryParams>, res: Response) {
+    const { startTime, endTime } = req.query;
+
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+
+    const values = [!!startTime ? new Date(startTime) : date];
+
+    let whereClause = 'WHERE timestamp >= $1';
+    if (endTime) {
+        whereClause += ' AND timestamp <= $2';
+        values.push(new Date(endTime));
+    }
+
     const { rows } = await pool.query(
-        'SELECT * from sensor_data ORDER BY timestamp, sensor_id, sensor_name',
+        `SELECT *
+         from sensor_data ${whereClause}
+         ORDER BY timestamp, sensor_id, sensor_name`,
+        values,
     );
+
     res.send(rows);
 }
 
 export async function getSensorData(req: Request, res: Response) {
     const { rows } = await pool.query(
         'SELECT * from sensor_data WHERE sensor_name = $1',
-        [req.params.sensorName]
+        [req.params.sensorName],
     );
     res.send(rows);
 }
@@ -45,14 +62,14 @@ export async function saveSensorData(req: Request<any, any, SensorDataBody>, res
     }
 
     // @ts-ignore
-    if (!(Object.values(SensorName).includes(sensor_name ))) {
+    if (!(Object.values(SensorName).includes(sensor_name))) {
         res.status(400).send('invalid sensor_name');
         return;
     }
 
     await pool.query<any, any>(
         'INSERT INTO sensor_data (sensor_id, sensor_name, sensor_value, timestamp) VALUES ($1::integer, $2, $3::real, $4)',
-        [sensor_id, sensor_name, sensor_value, timestamp] as const
+        [sensor_id, sensor_name, sensor_value, timestamp] as const,
     );
 
     res.send('ok');
@@ -83,7 +100,7 @@ export async function saveSensorDataMulti(req: Request<any, any, SensorDataBody[
 
         // @ts-ignore
         if (!(Object.values(SensorName).includes(sensor_name))) {
-            invalidSensorName = true
+            invalidSensorName = true;
             return;
         }
 
@@ -109,9 +126,9 @@ export async function saveSensorDataMulti(req: Request<any, any, SensorDataBody[
         if (!row) return;
         pool.query<any, any>(
             'INSERT INTO sensor_data (sensor_id, sensor_name, sensor_value, timestamp) VALUES ($1::integer, $2, $3::real, $4)',
-            row
+            row,
         );
-    })
+    });
 
     res.send('ok');
 }

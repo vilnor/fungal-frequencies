@@ -24,3 +24,8 @@ export type SensorDataBody = {
     sensor_id?: number // which physical sensor the data came from
     sensor_value?: number // the value of the sensor reading
 };
+
+export type SensorDataQueryParams = {
+    startTime?: string // start time of the query in ISO format
+    endTime?: string // end time of the query in ISO format
+}
