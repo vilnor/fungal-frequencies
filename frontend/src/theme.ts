@@ -1,5 +1,5 @@
-import {createTheme, PaletteMode} from "@mui/material";
-import {useMemo} from "react";
+import { createTheme, PaletteMode } from '@mui/material';
+import { useMemo } from 'react';
 
 export function useTheme(mode: PaletteMode) {
     return useMemo(
@@ -14,6 +14,6 @@ export function useTheme(mode: PaletteMode) {
                 },
             },
         }),
-        [mode]
+        [mode],
     );
 }
