@@ -5,12 +5,6 @@ export type SensorData = {
     timestamp: string
 }
 
-export type DataView = {
-    data: SensorData[] | undefined
-    isError: boolean
-    isLoading: boolean
-}
-
 const a = [
     {
         sensor_id: 1,

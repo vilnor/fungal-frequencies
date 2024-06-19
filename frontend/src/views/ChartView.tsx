@@ -1,8 +1,9 @@
-import { DataView, SensorData } from '../types';
+import { SensorData } from '../types';
 import React, { useMemo } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
+import useData from '../api/useData';
 
 const chartColourMap: { [k: string]: string } = {
     humidity: '#2095e3',
@@ -16,9 +17,9 @@ const chartColourMap: { [k: string]: string } = {
 };
 
 function transformDataToHighcharts(data: SensorData[]): {
-    [k: string]: { name: string, data: any[], color: string }[]
+    [k: string]: { name: string, data: any[], color?: string }[]
 } {
-    return data.reduce((acc: { [k: string]: { name: string, data: any[], color: string }[] }, curr) => {
+    return data.reduce((acc: { [k: string]: { name: string, data: any[], color?: string }[] }, curr) => {
         const sensorName = curr.sensor_name;
         const sensorId = curr.sensor_id;
         const sensorKey = `sensor-${sensorId}`;
@@ -33,7 +34,7 @@ function transformDataToHighcharts(data: SensorData[]): {
             acc[sensorName].push({
                 name: sensorKey,
                 data: [[new Date(curr.timestamp).getTime(), curr.sensor_value]],
-                color: chartColourMap[sensorName],
+                // color: chartColourMap[sensorName],
             });
         } else {
             acc[sensorName][sensorIndex].data.push([new Date(curr.timestamp).getTime(), curr.sensor_value]);
@@ -44,43 +45,46 @@ function transformDataToHighcharts(data: SensorData[]): {
 }
 
 
-function ChartView({ data, isError, isLoading }: DataView) {
+function ChartView() {
+    const { data, isError, isLoading } = useData();
     const series = useMemo(() => !!data ? transformDataToHighcharts(data) : [], [data]);
-    return <div>
-        {isLoading && (
-            <p>Loading...</p>
-        )}
-        <Grid
-            container
-            rowSpacing={1}
-            columnSpacing={1}
-        >
-            {!isLoading && !isError && (
-                Object.entries(series).map(([name, conf]) => (
-                    <Grid xs={4}>
-                        <HighchartsReact
-                            highcharts={Highcharts}
-                            options={{
-                                title: {
-                                    text: name,
-                                },
-                                time: {
-                                    useUTC: false,
-                                },
-                                chart: {
-                                    zoomType: 'x',
-                                },
-                                xAxis: {
-                                    type: 'datetime',
-                                },
-                                series: conf,
-                            }}
-                        />
-                    </Grid>
-                ))
+    return (
+        <Box sx={{ p: 5, height: '100%', overflow: 'auto' }}>
+            {isLoading && (
+                <p>Loading...</p>
             )}
-        </Grid>
-    </div>;
+            <Grid
+                container
+                rowSpacing={1}
+                columnSpacing={1}
+            >
+                {!isLoading && !isError && (
+                    Object.entries(series).map(([name, conf]) => (
+                        <Grid xs={12} md={6} lg={4}>
+                            <HighchartsReact
+                                highcharts={Highcharts}
+                                options={{
+                                    title: {
+                                        text: name,
+                                    },
+                                    time: {
+                                        useUTC: false,
+                                    },
+                                    chart: {
+                                        zoomType: 'x',
+                                    },
+                                    xAxis: {
+                                        type: 'datetime',
+                                    },
+                                    series: conf,
+                                }}
+                            />
+                        </Grid>
+                    ))
+                )}
+            </Grid>
+        </Box>
+    );
 }
 
 export default ChartView;

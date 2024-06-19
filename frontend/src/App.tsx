@@ -1,50 +1,35 @@
-import React, { HTMLAttributes, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import useData from './api/useData';
-import { AppBar, Box, CssBaseline, PaletteMode, Tab, Tabs, ThemeProvider, Toolbar, Typography } from '@mui/material';
-import TableView from './views/TableView';
-import ChartView from './views/ChartView';
+import { AppBar, Box, Button, CssBaseline, PaletteMode, ThemeProvider, Toolbar, Typography } from '@mui/material';
 import { useTheme } from './theme';
-
-
-interface TabPanelProps {
-    children?: React.ReactNode;
-    index: number;
-    value: number;
-}
-
-function CustomTabPanel(props: TabPanelProps & HTMLAttributes<HTMLDivElement>) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            {...other}
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-        >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    {children}
-                </Box>
-            )}
-        </div>
-    );
-}
-
+import { Outlet, useNavigate } from 'react-router-dom';
 
 function App() {
-    const { data, isLoading, isError } = useData();
-    const [tabValue, setTabValue] = useState(0);
     const [mode, setMode] = useState<PaletteMode>('light');
     const theme = useTheme(mode);
+
+    const navigate = useNavigate();
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline/>
-            <AppBar position="absolute">
+            <AppBar
+                position="absolute"
+                elevation={0}
+            >
                 <Toolbar>
-                    <Typography variant="h5">Biome Data</Typography>
+                    <Typography
+                        variant="h5"
+                        component="div"
+                        sx={{ flexGrow: 1 }}
+                    >Biome Data</Typography>
+                    <Button
+                        color="inherit"
+                        onClick={() => navigate('/')}
+                    >Chart View</Button>
+                    <Button
+                        color="inherit"
+                        onClick={() => navigate('/table')}
+                    >Table View</Button>
                 </Toolbar>
             </AppBar>
             <Box
@@ -58,35 +43,7 @@ function App() {
                 }}
             >
                 <Toolbar/>
-                <Tabs
-                    value={tabValue}
-                    onChange={(e, nV) => setTabValue(nV)}
-                >
-                    <Tab label="Chart View"/>
-                    <Tab label="Table View"/>
-                </Tabs>
-                <CustomTabPanel
-                    value={tabValue}
-                    index={0}
-                    style={{ overflow: 'auto' }}
-                >
-                    <ChartView
-                        data={data}
-                        isError={isError}
-                        isLoading={isLoading}
-                    />
-                </CustomTabPanel>
-                <CustomTabPanel
-                    value={tabValue}
-                    index={1}
-                    style={{ overflow: 'auto' }}
-                >
-                    <TableView
-                        data={data}
-                        isError={isError}
-                        isLoading={isLoading}
-                    />
-                </CustomTabPanel>
+                <Outlet/>
             </Box>
         </ThemeProvider>
     );
