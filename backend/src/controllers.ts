@@ -13,7 +13,7 @@ export async function getHealth(_req: Request, res: Response) {
 
 export async function getData(req: Request, res: Response) {
     const { rows } = await pool.query(
-        'SELECT * from sensor_data',
+        'SELECT * from sensor_data ORDER BY timestamp, sensor_id, sensor_name',
     );
     res.send(rows);
 }
