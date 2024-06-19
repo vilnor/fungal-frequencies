@@ -81,7 +81,7 @@ function ChartView() {
 
     return (
         <>
-            <Toolbar sx={{ justifyContent: 'flex-end', gap: 1 }}>
+            <Toolbar sx={{ justifyContent: 'flex-end', gap: 1, p: 3 }}>
                 {timeRange === 'custom' && (
                     <>
                         <DateTimePicker
@@ -120,7 +120,7 @@ function ChartView() {
                     }
                 />
             </Toolbar>
-            <Box sx={{ p: 5, height: '100%', overflow: 'auto' }}>
+            <Box sx={{ p: 5, pt: 0, height: '100%', overflow: 'auto' }}>
                 {isLoading && (
                     <p>Loading...</p>
                 )}

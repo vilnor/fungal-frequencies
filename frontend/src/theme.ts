@@ -7,10 +7,10 @@ export function useTheme(mode: PaletteMode) {
             palette: {
                 mode,
                 primary: {
-                    main: '#ab5b00',
+                    main: '#047900',
                 },
                 secondary: {
-                    main: '#7e57c2',
+                    main: '#bd5f00',
                 },
             },
         }),

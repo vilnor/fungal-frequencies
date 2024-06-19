@@ -5,6 +5,7 @@ import { useTheme } from './theme';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import MushroomIcon from './MushroomIcon';
 
 function App() {
     const [mode, setMode] = useState<PaletteMode>('light');
@@ -20,6 +21,7 @@ function App() {
                     elevation={0}
                 >
                     <Toolbar>
+                        <MushroomIcon sx={{ mr: 1 }}/>
                         <Typography
                             variant="h5"
                             component="div"
