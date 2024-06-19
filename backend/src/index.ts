@@ -3,7 +3,7 @@ import express from 'express';
 import { config } from 'dotenv'
 import path from 'path';
 
-config();
+config({path: __dirname + '/../.env'});
 
 import router from './routes';
 
