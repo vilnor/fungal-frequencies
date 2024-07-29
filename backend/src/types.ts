@@ -20,7 +20,7 @@ export enum SensorId {
 
 export type SensorDataBody = {
     timestamp?: string // time data was recorded in ISO format
-    sensor_name?: string // type of sensor, e.g. temperature, humidity
+    sensor_name?: SensorName // type of sensor, e.g. temperature, humidity
     sensor_id?: number // which physical sensor the data came from
     sensor_value?: number // the value of the sensor reading
 };
