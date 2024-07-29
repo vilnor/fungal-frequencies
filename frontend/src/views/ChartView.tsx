@@ -22,7 +22,7 @@ function transformDataToHighcharts(data: SensorData[]): {
     [k: string]: { name: string, data: any[], color?: string }[]
 } {
     return data.reduce((acc: { [k: string]: { name: string, data: any[], color?: string }[] }, curr) => {
-        const sensorName = curr.sensor_name;
+        const sensorName = `${curr.sensor_name} (${curr.units})`;
         const sensorId = curr.sensor_id;
         const sensorKey = `sensor-${sensorId}`;
 
@@ -151,6 +151,7 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                         container
                         rowSpacing={1}
                         columnSpacing={1}
+                        height="100%"
                     >
                         {Object.entries(series).map(([name, conf]) => (
                             <Grid
