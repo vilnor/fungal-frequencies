@@ -53,6 +53,31 @@ export async function getData(req: Request<any, any, any, SensorDataQueryParams>
     res.send(rowsWithUnits);
 }
 
+
+export async function getMonitoringData(req: Request<any, any, any, SensorDataQueryParams>, res: Response) {
+    const { startTime, endTime } = req.query;
+
+    const date = new Date();
+    date.setDate(date.getDate() - 1);
+
+    const values = [!!startTime ? new Date(startTime) : date];
+
+    let whereClause = 'WHERE timestamp >= $1';
+    if (endTime) {
+        whereClause += ' AND timestamp <= $2';
+        values.push(new Date(endTime));
+    }
+
+    const { rows } = await pool.query(
+        `SELECT *
+         from monitoring_data ${whereClause}
+         ORDER BY timestamp, sensor_id, sensor_name`,
+        values,
+    );
+
+    res.send(rows);
+}
+
 export async function getSensorData(req: Request, res: Response) {
     const { rows } = await pool.query(
         'SELECT * from sensor_data WHERE sensor_name = $1',
@@ -144,6 +169,53 @@ export async function saveSensorDataMulti(req: Request<any, any, SensorDataBody[
         if (!row) return;
         pool.query<any, any>(
             'INSERT INTO sensor_data (sensor_id, sensor_name, sensor_value, timestamp) VALUES ($1::integer, $2, $3::real, $4)',
+            row,
+        );
+    });
+
+    res.send('ok');
+}
+
+export async function saveMonitoringDataMulti(req: Request<any, any, SensorDataBody[]>, res: Response) {
+    const data = req.body;
+
+    if (!data.length) {
+        res.status(400).send('missing required fields');
+        return;
+    }
+
+    let missingFields = false;
+    let invalidSensorId = false;
+    let invalidSensorName = false;
+
+    const values = data.map(({ sensor_id, sensor_name, sensor_value, timestamp }) => {
+        if (sensor_id === undefined || sensor_name === undefined || sensor_value === undefined || timestamp === undefined) {
+            missingFields = true;
+            return;
+        }
+
+        return [sensor_id, sensor_name, sensor_value, timestamp] as const;
+    });
+
+    if (missingFields) {
+        res.status(400).send('missing required fields');
+        return;
+    }
+
+    if (invalidSensorId) {
+        res.status(400).send('invalid sensor id');
+        return;
+    }
+
+    if (invalidSensorName) {
+        res.status(400).send('invalid sensor name');
+        return;
+    }
+
+    values.forEach((row) => {
+        if (!row) return;
+        pool.query<any, any>(
+            'INSERT INTO monitoring_data (sensor_id, sensor_name, sensor_value, timestamp) VALUES ($1::integer, $2, $3::real, $4)',
             row,
         );
     });
