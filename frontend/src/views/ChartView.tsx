@@ -1,11 +1,11 @@
-import { SensorData } from '../types';
-import React, { useEffect, useMemo, useState } from 'react';
+import {SensorData} from '../types';
+import React, {useEffect, useMemo, useState} from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
-import { Autocomplete, Box, Grid, TextField, Toolbar } from '@mui/material';
+import {Autocomplete, Box, Card, CircularProgress, Grid, TextField, Toolbar, Typography} from '@mui/material';
 import useData from '../api/useData';
-import { DateTimePicker } from '@mui/x-date-pickers';
-import dayjs, { Dayjs } from 'dayjs';
+import {DateTimePicker} from '@mui/x-date-pickers';
+import dayjs, {Dayjs} from 'dayjs';
 
 const chartColourMap: { [k: string]: string } = {
     humidity: '#2095e3',
@@ -49,11 +49,11 @@ function transformDataToHighcharts(data: SensorData[]): {
 const currentTime = new Date();
 
 const TIME_OPTIONS = [
-    { label: 'Last hour', value: 'hour' },
-    { label: 'Last day', value: 'day' },
-    { label: 'Last week', value: 'week' },
+    {label: 'Last hour', value: 'hour'},
+    {label: 'Last day', value: 'day'},
+    {label: 'Last week', value: 'week'},
     {label: 'All', value: 'all'},
-    { label: 'Custom', value: 'custom' },
+    {label: 'Custom', value: 'custom'},
 ];
 
 
@@ -61,7 +61,11 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
     const [timeRange, setTimeRange] = useState('day');
     const [startTime, setStartTime] = useState<Dayjs | null>(null);
     const [endTime, setEndTime] = useState<Dayjs | null>(null);
-    const { data, isError, isLoading } = useData(isMonitoring, undefined, startTime?.toISOString(), endTime?.toISOString());
+    const {
+        data,
+        isError,
+        isLoading
+    } = useData(isMonitoring, undefined, startTime?.toISOString(), endTime?.toISOString());
     const series = useMemo(() => !!data ? transformDataToHighcharts(data) : [], [data]);
 
     useEffect(() => {
@@ -77,7 +81,7 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
         } else if (timeRange === 'all') {
             setStartTime(dayjs(new Date(2024, 5, 1)));
             setEndTime(null);
-        }  else {
+        } else {
             setStartTime(null);
             setEndTime(null);
         }
@@ -85,7 +89,7 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
 
     return (
         <>
-            <Toolbar sx={{ justifyContent: 'flex-end', gap: 1, p: 3 }}>
+            <Toolbar sx={{justifyContent: 'flex-end', gap: 1, p: 3}}>
                 {timeRange === 'custom' && (
                     <>
                         <DateTimePicker
@@ -114,7 +118,7 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                     value={TIME_OPTIONS.find(option => option.value === timeRange) ?? null}
                     onChange={(_, value) => setTimeRange(value?.value ?? 'day')}
                     options={TIME_OPTIONS}
-                    sx={{ width: 300 }}
+                    sx={{width: 300}}
                     size="small"
                     renderInput={
                         (params) => <TextField
@@ -124,17 +128,31 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                     }
                 />
             </Toolbar>
-            <Box sx={{ p: 5, pt: 0, height: '100%', overflow: 'auto' }}>
+            <Box sx={{
+                p: 5,
+                pt: 0,
+                height: '100%',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                overflow: 'auto'
+            }}>
                 {isLoading && (
-                    <p>Loading...</p>
+                    <CircularProgress size={75} />
                 )}
-                <Grid
-                    container
-                    rowSpacing={1}
-                    columnSpacing={1}
-                >
-                    {!isLoading && !isError && (
-                        Object.entries(series).map(([name, conf]) => (
+                {!isLoading && (isError || !data || !data.length) && (
+                    <Typography variant="h5" color="grey">
+                        No data available
+                    </Typography>
+                )}
+                {!isLoading && !isError && !!data && !!data.length && (
+                    <Grid
+                        container
+                        rowSpacing={1}
+                        columnSpacing={1}
+                    >
+                        {Object.entries(series).map(([name, conf]) => (
                             <Grid
                                 xs={12}
                                 md={6}
@@ -159,9 +177,9 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                                     }}
                                 />
                             </Grid>
-                        ))
-                    )}
-                </Grid>
+                        ))}
+                    </Grid>
+                )}
             </Box>
         </>
     );
