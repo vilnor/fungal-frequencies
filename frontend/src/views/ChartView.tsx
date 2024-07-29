@@ -52,6 +52,7 @@ const TIME_OPTIONS = [
     { label: 'Last hour', value: 'hour' },
     { label: 'Last day', value: 'day' },
     { label: 'Last week', value: 'week' },
+    {label: 'All', value: 'all'},
     { label: 'Custom', value: 'custom' },
 ];
 
@@ -73,7 +74,10 @@ function ChartView() {
         } else if (timeRange === 'week') {
             setStartTime(dayjs(currentTime).subtract(1, 'week'));
             setEndTime(null);
-        } else {
+        } else if (timeRange === 'all') {
+            setStartTime(dayjs(new Date(2024, 5, 1)));
+            setEndTime(null);
+        }  else {
             setStartTime(null);
             setEndTime(null);
         }

@@ -11,6 +11,7 @@ const columnDefinition: GridColDef<SensorData>[] = [
     {field: 'sensor_name', headerName: 'Sensor', flex: 1, type: 'string'},
     {field: 'sensor_id', headerName: 'Sensor ID', flex: 1, type: 'number'},
     {field: 'sensor_value', headerName: 'Value', flex: 1, type: 'number'},
+    {field: 'units', headerName: 'Units', flex: 1, type: 'string'},
 ];
 
 const currentTime = new Date();
@@ -18,6 +19,7 @@ const TIME_OPTIONS = [
     {label: 'Last hour', value: 'hour'},
     {label: 'Last day', value: 'day'},
     {label: 'Last week', value: 'week'},
+    {label: 'All', value: 'all'},
     {label: 'Custom', value: 'custom'},
 ];
 
@@ -37,6 +39,9 @@ function TableView() {
             setEndTime(null);
         } else if (timeRange === 'week') {
             setStartTime(dayjs(currentTime).subtract(1, 'week'));
+            setEndTime(null);
+        } else if (timeRange === 'all') {
+            setStartTime(dayjs(new Date(2024, 5, 1)));
             setEndTime(null);
         } else {
             setStartTime(null);

@@ -11,6 +11,19 @@ export async function getHealth(_req: Request, res: Response) {
     }
 }
 
+const SENSOR_UNITS = {
+    humidity: "%",
+    temperature: "°C",
+    conductivity: "us/cm",
+    ph: "pH",
+    nitrogen: "mg/kg",
+    phosphorus: "mg/kg",
+    potassium: "mg/kg",
+    salinity: "mg/L",
+    tds: "mg/L",
+    default: '',
+}
+
 export async function getData(req: Request<any, any, any, SensorDataQueryParams>, res: Response) {
     const { startTime, endTime } = req.query;
 
@@ -25,14 +38,19 @@ export async function getData(req: Request<any, any, any, SensorDataQueryParams>
         values.push(new Date(endTime));
     }
 
-    const { rows } = await pool.query(
+    const { rows } = await pool.query<SensorDataBody>(
         `SELECT *
          from sensor_data ${whereClause}
          ORDER BY timestamp, sensor_id, sensor_name`,
         values,
     );
 
-    res.send(rows);
+    const rowsWithUnits = rows.map((row) => ({
+        ...row,
+        units: SENSOR_UNITS[row.sensor_name || 'default']
+    }));
+
+    res.send(rowsWithUnits);
 }
 
 export async function getSensorData(req: Request, res: Response) {
