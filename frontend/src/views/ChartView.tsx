@@ -22,7 +22,7 @@ function transformDataToHighcharts(data: SensorData[]): {
     [k: string]: { name: string, data: any[], color?: string }[]
 } {
     return data.reduce((acc: { [k: string]: { name: string, data: any[], color?: string }[] }, curr) => {
-        const sensorName = `${curr.sensor_name} (${curr.units})`;
+        const sensorName = `${curr.sensor_name}${!!curr.units ? (' (' + curr.units + ')') : ''}`;
         const sensorId = curr.sensor_id;
         const sensorKey = `sensor-${sensorId}`;
 
@@ -79,7 +79,7 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
             setStartTime(dayjs(currentTime).subtract(1, 'week'));
             setEndTime(null);
         } else if (timeRange === 'all') {
-            setStartTime(dayjs(new Date(2024, 5, 1)));
+            setStartTime(dayjs(new Date(2020, 0, 1)));
             setEndTime(null);
         } else {
             setStartTime(null);
