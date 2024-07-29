@@ -15,7 +15,7 @@ const SENSOR_UNITS = {
     humidity: "%",
     temperature: "°C",
     conductivity: "us/cm",
-    ph: "pH",
+    ph: "level",
     nitrogen: "mg/kg",
     phosphorus: "mg/kg",
     potassium: "mg/kg",
