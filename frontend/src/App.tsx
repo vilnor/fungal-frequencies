@@ -29,11 +29,11 @@ function App() {
                         >Biome Data</Typography>
                         <Button
                             color="inherit"
-                            onClick={() => navigate('/')}
+                            onClick={() => navigate('./')}
                         >Chart View</Button>
                         <Button
                             color="inherit"
-                            onClick={() => navigate('/table')}
+                            onClick={() => navigate('./table')}
                         >Table View</Button>
                     </Toolbar>
                 </AppBar>

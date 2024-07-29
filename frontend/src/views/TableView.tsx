@@ -23,12 +23,12 @@ const TIME_OPTIONS = [
     {label: 'Custom', value: 'custom'},
 ];
 
-function TableView() {
+function TableView({isMonitoring = false}: {isMonitoring?: boolean}) {
     // const { data, isError, isLoading } = useData();
     const [timeRange, setTimeRange] = useState('day');
     const [startTime, setStartTime] = useState<Dayjs | null>(null);
     const [endTime, setEndTime] = useState<Dayjs | null>(null);
-    const {data, isError, isLoading} = useData(undefined, startTime?.toISOString(), endTime?.toISOString());
+    const {data, isError, isLoading} = useData(isMonitoring, undefined, startTime?.toISOString(), endTime?.toISOString());
 
     useEffect(() => {
         if (timeRange === 'hour') {

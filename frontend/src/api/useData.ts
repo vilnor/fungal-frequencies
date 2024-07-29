@@ -5,10 +5,11 @@ import { useMemo } from 'react';
 console.log(process.env.REACT_APP_API_URL);
 
 const ENDPOINT = `${process.env.REACT_APP_API_URL}/api/data`;
+const MONITORING_ENDPOINT = `${process.env.REACT_APP_API_URL}/api/monitoring_data`;
 
 const fetcher: Fetcher<SensorData[], string> = (...args) => fetch(...args).then(res => res.json());
 
-export default function useData(sensorName?: string, startTime?: string, endTime?: string) {
+export default function useData(isMonitoring: boolean, sensorName?: string, startTime?: string, endTime?: string) {
     const queryParams = useMemo(() => {
         const params = new URLSearchParams();
 
@@ -27,7 +28,7 @@ export default function useData(sensorName?: string, startTime?: string, endTime
         data,
         error,
         isLoading,
-    } = useSWR(`${ENDPOINT}${!!sensorName ? ('/' + sensorName) : ''}${!!queryParams ? ('?' + queryParams) : ''}`, fetcher);
+    } = useSWR(`${isMonitoring ? MONITORING_ENDPOINT : ENDPOINT}${!!sensorName ? ('/' + sensorName) : ''}${!!queryParams ? ('?' + queryParams) : ''}`, fetcher);
 
     return {
         data,

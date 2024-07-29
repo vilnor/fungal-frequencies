@@ -57,11 +57,11 @@ const TIME_OPTIONS = [
 ];
 
 
-function ChartView() {
+function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
     const [timeRange, setTimeRange] = useState('day');
     const [startTime, setStartTime] = useState<Dayjs | null>(null);
     const [endTime, setEndTime] = useState<Dayjs | null>(null);
-    const { data, isError, isLoading } = useData(undefined, startTime?.toISOString(), endTime?.toISOString());
+    const { data, isError, isLoading } = useData(isMonitoring, undefined, startTime?.toISOString(), endTime?.toISOString());
     const series = useMemo(() => !!data ? transformDataToHighcharts(data) : [], [data]);
 
     useEffect(() => {
