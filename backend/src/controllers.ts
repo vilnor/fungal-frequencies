@@ -176,6 +176,10 @@ export async function saveSensorDataMulti(req: Request<any, any, SensorDataBody[
     res.send('ok');
 }
 
+export async function sendAudio(req: Request, res: Response) {
+    res.send('ok');
+}
+
 export async function saveMonitoringDataMulti(req: Request<any, any, SensorDataBody[]>, res: Response) {
     const data = req.body;
 

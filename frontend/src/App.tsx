@@ -35,6 +35,10 @@ function App() {
                             color="inherit"
                             onClick={() => navigate('./table')}
                         >Table View</Button>
+                        <Button
+                            color="inherit"
+                            onClick={() => navigate('/audio')}
+                        >Audio View</Button>
                     </Toolbar>
                 </AppBar>
                 <Box

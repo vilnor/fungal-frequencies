@@ -5,6 +5,7 @@ import App from './App';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ChartView from './views/ChartView';
 import TableView from './views/TableView';
+import AudioView from './views/AudioView';
 
 const router = createBrowserRouter([
     {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
             {
                 path: '/table',
                 element: <TableView/>,
+            },
+            {
+                path: '/audio',
+                element: <AudioView/>,
             },
         ],
     },
