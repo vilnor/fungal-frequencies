@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import { Autocomplete, Box, CircularProgress, Grid, TextField, Toolbar, Typography } from '@mui/material';
 import useData from '../api/useData';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
+import BiomeSelector from './BiomeSelector';
 
 const currentTime = new Date();
 
@@ -29,6 +30,16 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
         isLoading,
     } = useData<ChartSeries>(isMonitoring, undefined, startTime?.toISOString(), endTime?.toISOString(), 'highcharts');
 
+    const [visibleSensors, setVisibleSensors] = useState<number[]>([]);
+
+    // useEffect(() => {
+    //     data && Object.values(data).forEach((sensorTypeSeries) => {
+    //         sensorTypeSeries.forEach((s) => {
+    //             s.visible = visibleSensors.includes(Number(s.name.slice(-1))) || !visibleSensors.length;
+    //         });
+    //     });
+    // }, [data, visibleSensors]);
+
     useEffect(() => {
         if (timeRange === 'hour') {
             setStartTime(dayjs(currentTime).subtract(1, 'hour'));
@@ -47,6 +58,18 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
             setEndTime(null);
         }
     }, [timeRange]);
+
+    const handleSensorClick = useCallback((id: number) => {
+        setVisibleSensors((prev) => {
+            const newVisibleSensors = prev.includes(id) ? [...prev.filter((item) => item !== id)] : [...prev, id];
+            !!data && Object.values(data).forEach((sensorTypeSeries) => {
+                sensorTypeSeries.forEach((s) => {
+                    s.visible = newVisibleSensors.includes(Number(s.name.slice(-1))) || !newVisibleSensors.length;
+                });
+            });
+            return newVisibleSensors;
+        });
+    }, [data]);
 
     return (
         <>
@@ -99,6 +122,11 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                 alignItems: 'center',
                 overflow: 'auto',
             }}>
+                <div style={{height: '100%', padding: '16px'}}>
+                    <BiomeSelector
+                        onSensorClick={handleSensorClick}
+                        selectedSensors={visibleSensors}
+                    /></div>
                 {isLoading && (
                     <CircularProgress size={75}/>
                 )}
@@ -113,12 +141,14 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                         rowSpacing={1}
                         columnSpacing={1}
                         height="100%"
+                        overflow="auto"
                     >
                         {Object.entries(data).map(([name, conf]) => (
                             <Grid
                                 xs={12}
-                                md={6}
-                                lg={4}
+                                md={12}
+                                lg={6}
+                                key={name}
                             >
                                 <HighchartsReact
                                     highcharts={Highcharts}
@@ -137,6 +167,7 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                                         },
                                         series: conf,
                                     }}
+
                                 />
                             </Grid>
                         ))}
