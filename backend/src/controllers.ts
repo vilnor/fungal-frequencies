@@ -12,17 +12,18 @@ export async function getHealth(_req: Request, res: Response) {
 }
 
 const SENSOR_UNITS = {
-    humidity: "%",
-    temperature: "°C",
-    conductivity: "us/cm",
-    ph: "level",
-    nitrogen: "mg/kg",
-    phosphorus: "mg/kg",
-    potassium: "mg/kg",
-    salinity: "mg/L",
-    tds: "mg/L",
+    humidity: '%',
+    temperature: '°C',
+    conductivity: 'us/cm',
+    ph: 'level',
+    nitrogen: 'mg/kg',
+    phosphorus: 'mg/kg',
+    potassium: 'mg/kg',
+    salinity: 'mg/L',
+    tds: 'mg/L',
+    voltage: 'mg',
     default: '',
-}
+};
 
 function transformDataToHighcharts(data: SensorDataBody[]): {
     [k: string]: { name: string, data: any[], color?: string }[]
@@ -52,7 +53,7 @@ function transformDataToHighcharts(data: SensorDataBody[]): {
 }
 
 export async function getData(req: Request<any, any, any, SensorDataQueryParams>, res: Response) {
-    const { startTime, endTime, format } = req.query;
+    const {startTime, endTime, format} = req.query;
 
     const date = new Date();
     date.setDate(date.getDate() - 1);
@@ -65,7 +66,7 @@ export async function getData(req: Request<any, any, any, SensorDataQueryParams>
         values.push(new Date(endTime));
     }
 
-    const { rows } = await pool.query<SensorDataBody>(
+    const {rows} = await pool.query<SensorDataBody>(
         `SELECT *
          from sensor_data ${whereClause}
          ORDER BY timestamp, sensor_id, sensor_name`,
@@ -74,7 +75,7 @@ export async function getData(req: Request<any, any, any, SensorDataQueryParams>
 
     const rowsWithUnits = rows.map((row) => ({
         ...row,
-        units: SENSOR_UNITS[row.sensor_name || 'default']
+        units: SENSOR_UNITS[row.sensor_name || 'default'],
     }));
 
     if (format === 'highcharts') {
@@ -87,7 +88,7 @@ export async function getData(req: Request<any, any, any, SensorDataQueryParams>
 
 
 export async function getMonitoringData(req: Request<any, any, any, SensorDataQueryParams>, res: Response) {
-    const { startTime, endTime } = req.query;
+    const {startTime, endTime, format} = req.query;
 
     const date = new Date();
     date.setDate(date.getDate() - 1);
@@ -100,18 +101,27 @@ export async function getMonitoringData(req: Request<any, any, any, SensorDataQu
         values.push(new Date(endTime));
     }
 
-    const { rows } = await pool.query(
+    const {rows} = await pool.query<SensorDataBody>(
         `SELECT *
          from monitoring_data ${whereClause}
          ORDER BY timestamp, sensor_id, sensor_name`,
         values,
     );
+        const rowsWithUnits = rows.map((row) => ({
+        ...row,
+        units: SENSOR_UNITS[row.sensor_name || 'default'],
+    }));
+
+    if (format === 'highcharts') {
+        res.send(transformDataToHighcharts(rowsWithUnits));
+        return;
+    }
 
     res.send(rows);
 }
 
 export async function getSensorData(req: Request, res: Response) {
-    const { rows } = await pool.query(
+    const {rows} = await pool.query(
         'SELECT * from sensor_data WHERE sensor_name = $1',
         [req.params.sensorName],
     );
@@ -162,7 +172,7 @@ export async function saveSensorDataMulti(req: Request<any, any, SensorDataBody[
     let invalidSensorId = false;
     let invalidSensorName = false;
 
-    const values = data.map(({ sensor_id, sensor_name, sensor_value, timestamp }) => {
+    const values = data.map(({sensor_id, sensor_name, sensor_value, timestamp}) => {
         if (sensor_id === undefined || sensor_name === undefined || sensor_value === undefined || timestamp === undefined) {
             missingFields = true;
             return;
@@ -220,7 +230,7 @@ export async function saveMonitoringDataMulti(req: Request<any, any, SensorDataB
     let invalidSensorId = false;
     let invalidSensorName = false;
 
-    const values = data.map(({ sensor_id, sensor_name, sensor_value, timestamp }) => {
+    const values = data.map(({sensor_id, sensor_name, sensor_value, timestamp}) => {
         if (sensor_id === undefined || sensor_name === undefined || sensor_value === undefined || timestamp === undefined) {
             missingFields = true;
             return;
