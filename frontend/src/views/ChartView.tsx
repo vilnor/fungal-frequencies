@@ -32,14 +32,6 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
 
     const [visibleSensors, setVisibleSensors] = useState<number[]>([]);
 
-    // useEffect(() => {
-    //     data && Object.values(data).forEach((sensorTypeSeries) => {
-    //         sensorTypeSeries.forEach((s) => {
-    //             s.visible = visibleSensors.includes(Number(s.name.slice(-1))) || !visibleSensors.length;
-    //         });
-    //     });
-    // }, [data, visibleSensors]);
-
     useEffect(() => {
         if (timeRange === 'hour') {
             setStartTime(dayjs(currentTime).subtract(1, 'hour'));
@@ -122,11 +114,11 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                 alignItems: 'center',
                 overflow: 'auto',
             }}>
-                <div style={{height: '100%', padding: '16px'}}>
+                {!isMonitoring && (<div style={{height: '100%', padding: '16px'}}>
                     <BiomeSelector
                         onSensorClick={handleSensorClick}
                         selectedSensors={visibleSensors}
-                    /></div>
+                    /></div>)}
                 {isLoading && (
                     <CircularProgress size={75}/>
                 )}

@@ -21,11 +21,12 @@ function App() {
                     elevation={0}
                 >
                     <Toolbar>
-                        <MushroomIcon sx={{ mr: 1 }}/>
+                        <MushroomIcon sx={{mr: 1}} onClick={() => navigate('/')}/>
                         <Typography
                             variant="h5"
                             component="div"
-                            sx={{ flexGrow: 1 }}
+                            sx={{flexGrow: 1}}
+                            onClick={() => navigate('/')}
                         >Biome Data</Typography>
                         <Button
                             color="inherit"
