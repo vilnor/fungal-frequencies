@@ -1,50 +1,10 @@
-import {SensorData} from '../types';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
-import {Autocomplete, Box, Card, CircularProgress, Grid, TextField, Toolbar, Typography} from '@mui/material';
+import { Autocomplete, Box, CircularProgress, Grid, TextField, Toolbar, Typography } from '@mui/material';
 import useData from '../api/useData';
-import {DateTimePicker} from '@mui/x-date-pickers';
-import dayjs, {Dayjs} from 'dayjs';
-
-const chartColourMap: { [k: string]: string } = {
-    humidity: '#2095e3',
-    temperature: '#a60016',
-    conductivity: '#e3c500',
-    phosphorus: '#30d933',
-    nitrogen: '#969696',
-    potassium: '#8f70ff',
-    ph: '#000000',
-    salinity: '#ff8400',
-};
-
-function transformDataToHighcharts(data: SensorData[]): {
-    [k: string]: { name: string, data: any[], color?: string }[]
-} {
-    return data.reduce((acc: { [k: string]: { name: string, data: any[], color?: string }[] }, curr) => {
-        const sensorName = `${curr.sensor_name}${!!curr.units ? (' (' + curr.units + ')') : ''}`;
-        const sensorId = curr.sensor_id;
-        const sensorKey = `sensor-${sensorId}`;
-
-        if (!acc[sensorName]) {
-            acc[sensorName] = [];
-        }
-
-        const sensorIndex = acc[sensorName].findIndex(item => item.name === sensorKey);
-
-        if (sensorIndex === -1) {
-            acc[sensorName].push({
-                name: sensorKey,
-                data: [[new Date(curr.timestamp).getTime(), curr.sensor_value]],
-                // color: chartColourMap[sensorName],
-            });
-        } else {
-            acc[sensorName][sensorIndex].data.push([new Date(curr.timestamp).getTime(), curr.sensor_value]);
-        }
-
-        return acc;
-    }, {});
-}
+import { DateTimePicker } from '@mui/x-date-pickers';
+import dayjs, { Dayjs } from 'dayjs';
 
 const currentTime = new Date();
 
@@ -55,7 +15,9 @@ const TIME_OPTIONS = [
     {label: 'All', value: 'all'},
     {label: 'Custom', value: 'custom'},
 ];
-
+type ChartSeries = {
+    [k: string]: { name: string, data: any[], visible?: boolean }[]
+}
 
 function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
     const [timeRange, setTimeRange] = useState('day');
@@ -64,9 +26,8 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
     const {
         data,
         isError,
-        isLoading
-    } = useData(isMonitoring, undefined, startTime?.toISOString(), endTime?.toISOString());
-    const series = useMemo(() => !!data ? transformDataToHighcharts(data) : [], [data]);
+        isLoading,
+    } = useData<ChartSeries>(isMonitoring, undefined, startTime?.toISOString(), endTime?.toISOString(), 'highcharts');
 
     useEffect(() => {
         if (timeRange === 'hour') {
@@ -136,24 +97,24 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                overflow: 'auto'
+                overflow: 'auto',
             }}>
                 {isLoading && (
-                    <CircularProgress size={75} />
+                    <CircularProgress size={75}/>
                 )}
-                {!isLoading && (isError || !data || !data.length) && (
+                {!isLoading && (isError || !data) && (
                     <Typography variant="h5" color="grey">
                         No data available
                     </Typography>
                 )}
-                {!isLoading && !isError && !!data && !!data.length && (
+                {!isLoading && !isError && !!data && (
                     <Grid
                         container
                         rowSpacing={1}
                         columnSpacing={1}
                         height="100%"
                     >
-                        {Object.entries(series).map(([name, conf]) => (
+                        {Object.entries(data).map(([name, conf]) => (
                             <Grid
                                 xs={12}
                                 md={6}
