@@ -24,8 +24,35 @@ const SENSOR_UNITS = {
     default: '',
 }
 
+function transformDataToHighcharts(data: SensorDataBody[]): {
+    [k: string]: { name: string, data: any[], color?: string }[]
+} {
+    return data.reduce((acc: { [k: string]: { name: string, data: any[], color?: string }[] }, curr) => {
+        const sensorName = `${curr.sensor_name}${!!curr.units ? (' (' + curr.units + ')') : ''}`;
+        const sensorId = curr.sensor_id;
+        const sensorKey = `sensor-${sensorId}`;
+
+        if (!acc[sensorName]) {
+            acc[sensorName] = [];
+        }
+
+        const sensorIndex = acc[sensorName].findIndex(item => item.name === sensorKey);
+
+        if (sensorIndex === -1) {
+            acc[sensorName].push({
+                name: sensorKey,
+                data: [[new Date(curr.timestamp).getTime(), curr.sensor_value]],
+            });
+        } else {
+            acc[sensorName][sensorIndex].data.push([new Date(curr.timestamp).getTime(), curr.sensor_value]);
+        }
+
+        return acc;
+    }, {});
+}
+
 export async function getData(req: Request<any, any, any, SensorDataQueryParams>, res: Response) {
-    const { startTime, endTime } = req.query;
+    const { startTime, endTime, format } = req.query;
 
     const date = new Date();
     date.setDate(date.getDate() - 1);
@@ -49,6 +76,11 @@ export async function getData(req: Request<any, any, any, SensorDataQueryParams>
         ...row,
         units: SENSOR_UNITS[row.sensor_name || 'default']
     }));
+
+    if (format === 'highcharts') {
+        res.send(transformDataToHighcharts(rowsWithUnits));
+        return;
+    }
 
     res.send(rowsWithUnits);
 }
