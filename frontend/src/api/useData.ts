@@ -2,8 +2,6 @@ import useSWR, { Fetcher } from 'swr';
 import { SensorData } from '../types';
 import { useMemo } from 'react';
 
-console.log(process.env.REACT_APP_API_URL);
-
 const ENDPOINT = `${process.env.REACT_APP_API_URL}/api/data`;
 const MONITORING_ENDPOINT = `${process.env.REACT_APP_API_URL}/api/monitoring_data`;
 
