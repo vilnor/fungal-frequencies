@@ -1,17 +1,17 @@
 import * as net from 'net';
 import { Request, Response } from 'express';
 
-const host: string = 'localhost';
-const port: number = 1174;
-const client = new net.Socket();
-client.connect(port, host, () => {
-    console.log('Connected to server');
-});
+// const host: string = 'localhost';
+// const port: number = 1174;
+// const client = new net.Socket();
+// client.connect(port, host, () => {
+//     console.log('Connected to server');
+// });
 
 function sendSrcPosMessage(src: number, pos: { x: number, y: number }) {
     const message = `src ${src} pos ${pos.x / 100} ${pos.y / 100};`;
     console.log(`Sending message: ${message}`);
-    client.write(message);
+    // client.write(message);
 }
 
 type PosBody = {
