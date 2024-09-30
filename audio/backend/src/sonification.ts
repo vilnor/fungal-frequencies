@@ -67,11 +67,10 @@ const MIN_POTASSIUM = 40;
 const MAX_POTASSIUM = 100;
 
 
-
 const client = new UDPPort({
-   remotedAddress: 'localhost',
-   remotePort: 8881,
-});
+                               remotedAddress: 'localhost',
+                               remotePort: 8881,
+                           });
 
 client.open();
 
@@ -81,18 +80,18 @@ function normalizeValue(value: number, min: number, max: number) {
 
 function createOSCMessage(oscParameter: number, oscValue: number): OSCMessage {
     return {
-            address: '/fader',
-            args: [
-                {
-                    type: 'i',
-                    value: oscParameter,
-                },
-                {
-                    type: 'f',
-                    value: oscValue,
-                },
-            ],
-        };
+        address: '/fader',
+        args: [
+            {
+                type: 'i',
+                value: oscParameter,
+            },
+            {
+                type: 'f',
+                value: oscValue,
+            },
+        ],
+    };
 }
 
 function mapSensorValueToOSCMessage(sensorId: number, sensorName: string, sensorValue: number): OSCMessage | null {
@@ -187,6 +186,8 @@ function mapSensorValueToOSCMessage(sensorId: number, sensorName: string, sensor
     }
 }
 
+let playingSoundscape = false;
+
 async function generateSoundscapeForData(data: SensorData[]) {
 
     const transformedData: { [timestamp: string]: OSCMessage[] } = {};
@@ -204,29 +205,50 @@ async function generateSoundscapeForData(data: SensorData[]) {
     const numTimestamps = Object.keys(transformedData).length;
     const delay = MS_IN_THREE_MINUTES / numTimestamps;
 
-     for (const messages of Object.values(transformedData)) {
+    for (const messages of Object.values(transformedData)) {
+        if (!playingSoundscape) {
+            return;
+        }
+
         messages.forEach((message) => {
             client.send(message);
         });
 
         await new Promise(r => setTimeout(r, delay));
     }
-     console.log('done');
+    console.log('done');
 }
 
 
 type SoundscapeQueryParams = {
     startTime?: string // start time of the query in ISO format
     endTime?: string // end time of the query in ISO format
+    action?: 'start' | 'stop'
 }
-export async function postSoundscape(req: Request<any, any, any, SoundscapeQueryParams>, res: Response) {
-    const { startTime, endTime } = req.query;
-    const data  = await fetch(`http://biome-iot.uqcloud.net/api/data?startTime=${startTime}&endTime=${endTime}`, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-            },
-        });
+
+export async function getSoundscape(req: Request<any, any, any, SoundscapeQueryParams>, res: Response) {
+    const { startTime, endTime, action } = req.query;
+    if (action === 'start' && playingSoundscape) {
+        res.send('already playing soundscape');
+        return;
+    }
+    if (action === 'stop' && !playingSoundscape) {
+        res.send('no soundscape playing');
+        return;
+    }
+    if (action === 'stop') {
+        playingSoundscape = false;
+        res.send('stopping soundscape');
+        return;
+    }
+
+    playingSoundscape = true;
+    const data = await fetch(`http://biome-iot.uqcloud.net/api/data?startTime=${startTime}&endTime=${endTime}`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+        },
+    });
     const json = await data.json();
     res.send('got data, generating soundscape');
     await generateSoundscapeForData(json);
