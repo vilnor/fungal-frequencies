@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { postPos } from './fudi';
+import { postPos, postRot } from './fudi';
 import { getSoundscape } from './sonification';
 
 const router = Router();
@@ -14,9 +14,14 @@ router.post(
     postPos,
 );
 
+router.post(
+    '/api/rot',
+    postRot,
+);
+
 router.get(
     '/api/soundscape',
-    getSoundscape
-)
+    getSoundscape,
+);
 
 export default router;

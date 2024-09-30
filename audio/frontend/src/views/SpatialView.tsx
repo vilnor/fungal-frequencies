@@ -3,6 +3,11 @@ import { Node, ReactFlow, useNodesState, Viewport } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import React, { useCallback, useState } from 'react';
 import usePostPos from '../api/usePos';
+import RotatableNode from './RotatableNode';
+
+const nodeTypes = {
+    rotatable: RotatableNode
+}
 
 const initialNodes = [
     {
@@ -50,7 +55,7 @@ const initialNodes = [
         position: { x: 0, y: 0 },
         data: { label: '5' },
     },
-    { id: '6', width: 75, height: 30, connectable: false, position: { x: 0, y: 10 }, data: { label: 'X' } },
+    { id: '6', width: 75, height: 30, connectable: false, position: { x: 0, y: 10 }, data: { label: 'X' }, type: 'rotatable' },
 ];
 
 function SpatialView() {
@@ -101,6 +106,7 @@ function SpatialView() {
             panOnDrag={false}
             zoomOnDoubleClick={false}
             nodeExtent={[[-600, -600], [600, 600]]}
+            nodeTypes={nodeTypes}
         />
     );
 }

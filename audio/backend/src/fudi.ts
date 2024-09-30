@@ -31,7 +31,7 @@ type RotBody = {
 }
 export async function postRot(req: Request<any, any, RotBody>, res: Response) {
     const { rotation } = req.body;
-    const message = `ref ${rotation} 0 0;`;
+    const message = `ref rot ${rotation} 0 0;`;
     console.log(`Sending message: ${message}`);
     client.write(message);
     res.send('ok');
