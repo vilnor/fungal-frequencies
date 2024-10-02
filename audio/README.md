@@ -36,3 +36,8 @@ The node application is located in the `frontend` and `backend` directories. The
     npm start
     ```
 6. Open a browser and navigate to http://localhost:8080 to control the audio spatialization
+
+## Debugging Audio Issues
+Open `qjackcontrol` and check the connection graph looks something like this. Note: there may be other connections to the `system` device depending on what other applications you have running.
+![image](https://github.com/user-attachments/assets/8b6e3d1e-f603-42ed-9c5b-c62f4dc51386)
+
