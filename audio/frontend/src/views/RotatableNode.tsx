@@ -38,7 +38,7 @@ export default function RotatableNode({
         style={{
           transform: `rotate(${rotation}deg)`,
         }}
-        className="react-flow__node-default"
+        className="custom-node"
       >
         <div
           ref={rotateControlRef}

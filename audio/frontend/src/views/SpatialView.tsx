@@ -4,58 +4,78 @@ import '@xyflow/react/dist/style.css';
 import React, { useCallback, useState } from 'react';
 import usePostPos from '../api/usePos';
 import RotatableNode from './RotatableNode';
+import SensorNode from './SensorNode';
 
 const nodeTypes = {
-    rotatable: RotatableNode
-}
+    rotatable: RotatableNode,
+    sensor: SensorNode,
+};
 
 const initialNodes = [
     {
         id: '1',
-        width: 75,
-        height: 30,
+        width: 50,
+        height: 50,
         connectable: false,
         draggable: false,
+        selectable: false,
         position: { x: 100, y: 100 },
         data: { label: '1' },
+        type: 'sensor',
     },
     {
         id: '2',
-        width: 75,
-        height: 30,
+        width: 50,
+        height: 50,
         connectable: false,
         draggable: false,
+        selectable: false,
         position: { x: 100, y: -100 },
         data: { label: '2' },
+        type: 'sensor',
     },
     {
         id: '3',
-        width: 75,
-        height: 30,
+        width: 50,
+        height: 50,
         connectable: false,
         draggable: false,
+        selectable: false,
         position: { x: -100, y: -100 },
         data: { label: '3' },
+        type: 'sensor',
     },
     {
         id: '4',
-        width: 75,
-        height: 30,
+        width: 50,
+        height: 50,
         connectable: false,
         draggable: false,
+        selectable: false,
         position: { x: -100, y: 100 },
         data: { label: '4' },
+        type: 'sensor',
     },
     {
         id: '5',
-        width: 75,
-        height: 30,
+        width: 50,
+        height: 50,
         connectable: false,
         draggable: false,
+        selectable: false,
         position: { x: 0, y: 0 },
         data: { label: '5' },
+        type: 'sensor',
     },
-    { id: '6', width: 75, height: 30, connectable: false, position: { x: 0, y: 10 }, data: { label: 'X' }, type: 'rotatable' },
+    {
+        id: '6',
+        width: 50,
+        height: 50,
+        connectable: false,
+        position: { x: 0, y: 10 },
+        data: { label: 'V' },
+        type: 'rotatable',
+    },
 ];
 
 function SpatialView() {
