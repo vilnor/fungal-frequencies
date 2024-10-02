@@ -253,3 +253,15 @@ export async function getSoundscape(req: Request<any, any, any, SoundscapeQueryP
     res.send('got data, generating soundscape');
     await generateSoundscapeForData(json);
 }
+
+function isNumber(x: any): x is number {
+    return typeof x === 'number';
+}
+
+export function initialiseOscMappings(req: Request, res: Response) {
+    const messages = Object.values(OSC_CONTROLS).filter(isNumber).map((control) => createOSCMessage(control, 1));
+    messages.forEach((message) => {
+        client.send(message);
+    });
+    res.send('sent osc mapping initialisation');
+}
