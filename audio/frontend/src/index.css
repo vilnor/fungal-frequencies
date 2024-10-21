@@ -44,26 +44,26 @@ code {
 }
 
 .rotateHandle {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  background: #047900;
-  left: 50%;
-  top: -30px;
-  border-radius: 100%;
-  transform: translate(-50%, -50%);
-  cursor: alias;
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #000;
+    left: 50%;
+    top: -5px;
+    border-radius: 100%;
+    transform: translate(-50%, -50%);
+    cursor: alias;
 }
 
 .rotateHandle:after {
-  content: '';
-  display: block;
-  position: absolute;
-  width: 1px;
-  height: 30px;
-  background: #047900;
-  left: 4px;
-  top: 5px;
+    content: '';
+    display: block;
+    position: absolute;
+    width: 1px;
+    height: 15px;
+    background: #000;
+    left: 4px;
+    top: 5px;
 }
 
 .custom-node {

@@ -36,3 +36,7 @@
         transform: rotate(360deg);
     }
 }
+
+.MuiAutocomplete-endAdornment .MuiSvgIcon-root, .MuiInputAdornment-root .MuiSvgIcon-root {
+    color: white;
+}

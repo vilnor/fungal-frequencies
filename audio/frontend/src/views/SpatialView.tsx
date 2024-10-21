@@ -83,7 +83,7 @@ function SpatialView() {
     const { postPos } = usePostPos();
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
 
-    const [viewport, setViewport] = useState<Viewport>({ x: 500, y: 500, zoom: 1 });
+    const [viewport, setViewport] = useState<Viewport>({ x: 650, y: 400, zoom: 1 });
     const [spatialFactor, setSpatialFactor] = useState(1);
     const onViewportChange = useCallback(async (v: Viewport) => {
         const newSpatialFactor = spatialFactor + (v.zoom - 1);

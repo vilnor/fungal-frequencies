@@ -76,14 +76,14 @@ function App() {
                     position="absolute"
                     elevation={0}
                 >
-                    <Toolbar>
+                    <Toolbar sx={{gap: 1}}>
                         <MushroomIcon sx={{ mr: 1 }} onClick={() => navigate('/')}/>
                         <Typography
                             variant="h5"
                             component="div"
                             sx={{ flexGrow: 1 }}
                             onClick={() => navigate('/')}
-                        >Biome Audio</Typography>
+                        >Fungal Frequency Control</Typography>
                         {timeRange === 'custom' && (
                             <>
                                 <DateTimePicker
@@ -95,7 +95,17 @@ function App() {
                                             size: 'small',
                                         },
                                     }}
-                                    sx={{ color: 'white' }}
+                                    sx={{
+                                        '.MuiOutlinedInput-notchedOutline': {
+                                            borderColor: 'white',
+                                        },
+                                        '.MuiFormLabel-root': {
+                                            color: 'white',
+                                        },
+                                        '.MuiInputBase-input': {
+                                            color: 'white',
+                                        },
+                                    }}
                                 />
                                 <DateTimePicker
                                     label="End Time"
@@ -106,7 +116,17 @@ function App() {
                                             size: 'small',
                                         },
                                     }}
-                                    sx={{ color: 'white' }}
+                                    sx={{
+                                        '.MuiOutlinedInput-notchedOutline': {
+                                            borderColor: 'white',
+                                        },
+                                        '.MuiFormLabel-root': {
+                                            color: 'white',
+                                        },
+                                        '.MuiInputBase-input': {
+                                            color: 'white',
+                                        },
+                                    }}
                                 />
                             </>
                         )}
@@ -114,7 +134,18 @@ function App() {
                             value={TIME_OPTIONS.find(option => option.value === timeRange) ?? null}
                             onChange={(_, value) => setTimeRange(value?.value ?? 'day')}
                             options={TIME_OPTIONS}
-                            sx={{ width: 300, color: 'white' }}
+                            sx={{
+                                '.MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'white',
+                                },
+                                '.MuiFormLabel-root': {
+                                    color: 'white',
+                                },
+                                '.MuiInputBase-input': {
+                                    color: 'white',
+                                },
+                                width: 300,
+                            }}
                             size="small"
                             renderInput={
                                 (params) => <TextField
@@ -123,8 +154,8 @@ function App() {
                                 />
                             }
                         />
-                        <IconButton onClick={onStartSoundscape}><PlayArrow/></IconButton>
-                        <IconButton onClick={onStopSoundscape}><Stop/></IconButton>
+                        <IconButton onClick={onStartSoundscape}><PlayArrow sx={{ color: 'white' }}/></IconButton>
+                        <IconButton onClick={onStopSoundscape}><Stop sx={{ color: 'white' }}/></IconButton>
                     </Toolbar>
                 </AppBar>
                 <Box
