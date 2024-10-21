@@ -187,6 +187,7 @@ function mapSensorValueToOSCMessage(sensorId: number, sensorName: string, sensor
 }
 
 let playingSoundscape = false;
+let liveSoundscape = false;
 
 async function generateSoundscapeForData(data: SensorData[]) {
 
@@ -219,15 +220,36 @@ async function generateSoundscapeForData(data: SensorData[]) {
     console.log('done');
 }
 
+async function handleLiveSoundscape() {
+    if (!liveSoundscape) {
+        return;
+    }
+
+    const endTime = new Date().toISOString();
+    const startTime = new Date(Date.now() - 600000).toISOString();
+
+    const data = await fetch(`http://biome-iot.uqcloud.net/api/data?startTime=${startTime}&endTime=${endTime}`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+        },
+    });
+    const json = await data.json();
+
+    await generateSoundscapeForData(json);
+}
+
+setInterval(handleLiveSoundscape, 600000);
+
 
 type SoundscapeQueryParams = {
     startTime?: string // start time of the query in ISO format
     endTime?: string // end time of the query in ISO format
-    action?: 'start' | 'stop'
+    action?: 'start' | 'stop' | 'live'
 }
 
 export async function getSoundscape(req: Request<any, any, any, SoundscapeQueryParams>, res: Response) {
-    const { startTime, endTime, action } = req.query;
+    let { startTime, endTime, action } = req.query;
     if (action === 'start' && playingSoundscape) {
         res.send('already playing soundscape');
         return;
@@ -238,11 +260,19 @@ export async function getSoundscape(req: Request<any, any, any, SoundscapeQueryP
     }
     if (action === 'stop') {
         playingSoundscape = false;
+        liveSoundscape = false;
         res.send('stopping soundscape');
         return;
     }
 
     playingSoundscape = true;
+
+    if (action === 'live') {
+        liveSoundscape = true;
+        res.send('starting live soundscape');
+        return;
+    }
+
     const data = await fetch(`http://biome-iot.uqcloud.net/api/data?startTime=${startTime}&endTime=${endTime}`, {
         method: 'GET',
         headers: {

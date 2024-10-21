@@ -24,6 +24,7 @@ import useSoundscape from './api/useSoundscape';
 const currentTime = new Date();
 
 const TIME_OPTIONS = [
+    { label: 'Live', value: 'live' },
     { label: 'Last hour', value: 'hour' },
     { label: 'Last day', value: 'day' },
     { label: 'Last week', value: 'week' },
@@ -57,7 +58,7 @@ function App() {
         }
     }, [timeRange]);
 
-    const { startSoundscape, stopSoundscape } = useSoundscape(startTime?.toISOString(), endTime?.toISOString());
+    const { startSoundscape, stopSoundscape } = useSoundscape(startTime?.toISOString(), endTime?.toISOString(), timeRange === 'live');
 
     const onStartSoundscape = useCallback(async () => {
         await startSoundscape();

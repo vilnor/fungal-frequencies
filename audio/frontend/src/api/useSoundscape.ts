@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 const ENDPOINT = `${process.env.REACT_APP_API_URL}/api/soundscape`;
 
 
-export default function useSoundscape(startTime?: string, endTime?: string) {
+export default function useSoundscape(startTime?: string, endTime?: string, live?: boolean) {
     const queryParams = useMemo(() => {
         const params = new URLSearchParams();
 
@@ -15,10 +15,14 @@ export default function useSoundscape(startTime?: string, endTime?: string) {
             params.append('endTime', endTime);
         }
 
-        params.append('action', 'start');
+        if (live !== undefined && live) {
+            params.append('action', 'live');
+        } else {
+            params.append('action', 'start');
+        }
 
         return params.toString();
-    }, [startTime, endTime]);
+    }, [startTime, endTime, live]);
 
     const startSoundscape = useCallback(async () => {
         const res = await fetch(`${ENDPOINT}${!!queryParams ? ('?' + queryParams) : ''}`, {
