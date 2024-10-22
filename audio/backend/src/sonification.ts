@@ -52,19 +52,20 @@ type OSCMessage = {
 }
 
 const MS_IN_THREE_MINUTES = 180000;
+const MIN_DELAY = 500; // ms
 
-const MIN_TEMPERATURE = 19;
-const MAX_TEMPERATURE = 24;
-const MIN_HUMIDITY = 10;
-const MAX_HUMIDITY = 25;
+const MIN_TEMPERATURE = 15;
+const MAX_TEMPERATURE = 30;
+const MIN_HUMIDITY = 0;
+const MAX_HUMIDITY = 100;
 const MIN_PH = 3;
 const MAX_PH = 9;
 const MIN_NITROGEN = 0;
-const MAX_NITROGEN = 25;
-const MIN_PHOSPHORUS = 50;
-const MAX_PHOSPHORUS = 110;
-const MIN_POTASSIUM = 40;
-const MAX_POTASSIUM = 100;
+const MAX_NITROGEN = 150;
+const MIN_PHOSPHORUS = 0;
+const MAX_PHOSPHORUS = 200;
+const MIN_POTASSIUM = 0;
+const MAX_POTASSIUM = 250;
 
 
 const client = new UDPPort({
@@ -204,7 +205,8 @@ async function generateSoundscapeForData(data: SensorData[]) {
     });
 
     const numTimestamps = Object.keys(transformedData).length;
-    const delay = MS_IN_THREE_MINUTES / numTimestamps;
+    const delay = Math.min(MS_IN_THREE_MINUTES / numTimestamps, MIN_DELAY);
+    console.log(delay)
 
     for (const messages of Object.values(transformedData)) {
         if (!playingSoundscape) {

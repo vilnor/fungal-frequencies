@@ -9,7 +9,7 @@ client.connect(port, host, () => {
 });
 
 function sendSrcPosMessage(src: number, pos: { x: number, y: number }) {
-    const message = `src ${src} pos ${pos.x / 100} ${pos.y / 100};`;
+    const message = `src ${src} pos ${(pos.x / 100)*1.5} ${(pos.y / 100)*1.5};`;
     client.write(message);
 }
 
