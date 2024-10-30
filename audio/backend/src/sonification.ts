@@ -228,7 +228,7 @@ async function handleLiveSoundscape() {
     }
 
     const endTime = new Date().toISOString();
-    const startTime = new Date(Date.now() - 600000).toISOString();
+    const startTime = new Date(Date.now() - 60000).toISOString();
 
     const data = await fetch(`http://biome-iot.uqcloud.net/api/data?startTime=${startTime}&endTime=${endTime}`, {
         method: 'GET',
@@ -241,7 +241,7 @@ async function handleLiveSoundscape() {
     await generateSoundscapeForData(json);
 }
 
-setInterval(handleLiveSoundscape, 600000);
+setInterval(handleLiveSoundscape, 60000);
 
 
 type SoundscapeQueryParams = {
