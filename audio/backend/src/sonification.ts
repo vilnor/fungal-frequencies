@@ -69,9 +69,9 @@ const MAX_POTASSIUM = 250;
 
 
 const client = new UDPPort({
-                               remotedAddress: 'localhost',
-                               remotePort: 8881,
-                           });
+    remotedAddress: 'localhost',
+    remotePort: 8881,
+});
 
 client.open();
 
@@ -206,7 +206,7 @@ async function generateSoundscapeForData(data: SensorData[]) {
 
     const numTimestamps = Object.keys(transformedData).length;
     const delay = Math.min(MS_IN_THREE_MINUTES / numTimestamps, MIN_DELAY);
-    console.log(delay)
+    console.log(delay);
 
     for (const messages of Object.values(transformedData)) {
         if (!playingSoundscape) {

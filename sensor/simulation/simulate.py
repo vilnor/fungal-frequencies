@@ -1,10 +1,10 @@
 import datetime
-import random
-import math
 import json
+import math
+import random
 
-import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 
 SENSOR_NAME_TO_UNITS = {
     "conductivity": "us/cm",
@@ -43,7 +43,8 @@ def generate_sensor_data(sensor_values, start_date, end_date, time_step_seconds=
         else:
             return temp_value * random.uniform(0.98, 1)
 
-    def generate_humidity(step, total_steps, sensor_id, start_humidity, nutrient_influence, start_absorption_step, stop_transfer_step):
+    def generate_humidity(step, total_steps, sensor_id, start_humidity, nutrient_influence, start_absorption_step,
+                          stop_transfer_step):
         """Generate humidity with random jumps."""
         humidity_value = start_humidity + random.uniform(-2, 2)  # Random jump ±2%
         if step < stop_transfer_step:
@@ -59,7 +60,7 @@ def generate_sensor_data(sensor_values, start_date, end_date, time_step_seconds=
                 if humidity_value > 40:
                     humidity_value -= 0.75
             else:
-                humidity_value -= 0.5 # Plant uses more humidity
+                humidity_value -= 0.5  # Plant uses more humidity
         return min(max(humidity_value, 5), 65)
 
     def generate_ph(step, total_steps, sensor_id, start_ph):
@@ -112,7 +113,8 @@ def generate_sensor_data(sensor_values, start_date, end_date, time_step_seconds=
                 for sensor_id in new_values:
                     start_humidity = sensor_data[sensor_id][sensor_name]
                     new_values[sensor_id][sensor_name] = generate_humidity(
-                        step, total_steps, sensor_id, start_humidity, nutrient_influence, start_absorption_step, stop_transfer_step
+                        step, total_steps, sensor_id, start_humidity, nutrient_influence, start_absorption_step,
+                        stop_transfer_step
                     )
             elif sensor_name == "ph":
                 for sensor_id in new_values:
@@ -133,9 +135,11 @@ def generate_sensor_data(sensor_values, start_date, end_date, time_step_seconds=
                 for sensor_id in new_values:
                     new_values[sensor_id][sensor_name] *= random.uniform(0.97, 1.03)
                     if sensor_id != 4:
-                        if sensor_id != 3 and new_values[sensor_id][sensor_name] > sensor_4_starting_values[sensor_name] * random.uniform(0.8, 0.9):
+                        if sensor_id != 3 and new_values[sensor_id][sensor_name] > sensor_4_starting_values[
+                            sensor_name] * random.uniform(0.8, 0.9):
                             new_values[sensor_id][sensor_name] *= random.uniform(0.85, 0.95)
-                        elif sensor_id == 3 and new_values[sensor_id][sensor_name] > sensor_4_starting_values[sensor_name] * random.uniform(0.9, 1):
+                        elif sensor_id == 3 and new_values[sensor_id][sensor_name] > sensor_4_starting_values[
+                            sensor_name] * random.uniform(0.9, 1):
                             new_values[sensor_id][sensor_name] *= random.uniform(0.9, 1)
 
         for sensor_id in new_values:
@@ -171,7 +175,8 @@ def plot_sensor_data(generated_data):
         sensor_name = entry['sensor_name']
         if sensor_id not in sensor_data_by_name[sensor_name]:
             sensor_data_by_name[sensor_name][sensor_id] = {'timestamps': [], 'values': []}
-        sensor_data_by_name[sensor_name][sensor_id]['timestamps'].append(datetime.datetime.fromisoformat(entry['timestamp']))
+        sensor_data_by_name[sensor_name][sensor_id]['timestamps'].append(
+            datetime.datetime.fromisoformat(entry['timestamp']))
         sensor_data_by_name[sensor_name][sensor_id]['values'].append(entry['sensor_value'])
 
     # Plot each sensor_name's data (one plot per sensor_name)
@@ -192,6 +197,7 @@ def plot_sensor_data(generated_data):
 
     plt.tight_layout()
     plt.show()
+
 
 sensor_values = [
     {"sensor_name": "conductivity",

@@ -1,4 +1,4 @@
-import { NodeProps, Node, useUpdateNodeInternals } from '@xyflow/react';
+import { Node, NodeProps, useUpdateNodeInternals } from '@xyflow/react';
 import { useEffect, useRef, useState } from 'react';
 import { drag } from 'd3-drag';
 import { select } from 'd3-selection';
@@ -6,9 +6,9 @@ import usePostRot from '../api/useRot';
 import { PersonPin } from '@mui/icons-material';
 
 export default function RotatableNode({
-                                          id,
-                                          data,
-                                      }: NodeProps<Node<{ label: string }>>) {
+    id,
+    data,
+}: NodeProps<Node<{ label: string }>>) {
     const rotateControlRef = useRef(null);
     const updateNodeInternals = useUpdateNodeInternals();
     const [rotation, setRotation] = useState(0);

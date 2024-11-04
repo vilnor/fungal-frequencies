@@ -4,9 +4,9 @@ import {
     getHealth,
     getMonitoringData,
     getSensorData,
+    saveMonitoringDataMulti,
     saveSensorData,
     saveSensorDataMulti,
-    saveMonitoringDataMulti,
 } from './controllers';
 
 const router = Router();
@@ -23,7 +23,7 @@ router.get(
 
 router.get(
     '/api/monitoring_data',
-    getMonitoringData
+    getMonitoringData,
 );
 
 router.get(

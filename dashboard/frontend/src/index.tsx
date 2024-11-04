@@ -27,14 +27,14 @@ const router = createBrowserRouter([
         children: [
             {
                 path: '/monitoring/',
-                element: <ChartView isMonitoring />,
+                element: <ChartView isMonitoring/>,
             },
             {
                 path: '/monitoring/table',
-                element: <TableView isMonitoring />,
+                element: <TableView isMonitoring/>,
             },
-        ]
-    }
+        ],
+    },
 ]);
 
 const root = ReactDOM.createRoot(

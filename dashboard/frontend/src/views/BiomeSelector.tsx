@@ -3,7 +3,7 @@ type BiomeSelectorProps = {
     selectedSensors: number[]
 }
 
-function BiomeSelector({onSensorClick, selectedSensors}: BiomeSelectorProps) {
+function BiomeSelector({ onSensorClick, selectedSensors }: BiomeSelectorProps) {
     return (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +121,11 @@ function BiomeSelector({onSensorClick, selectedSensors}: BiomeSelectorProps) {
                         fill: '#000',
                     }}
                 />
-                <g data-name="sensor-4" style={{cursor: 'pointer'}} onClick={() => onSensorClick(4)}>
+                <g
+                    data-name="sensor-4"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => onSensorClick(4)}
+                >
                     <path
                         d="M9.15 91.13h10.87v18.39H9.15z"
                         style={{
@@ -147,12 +151,19 @@ function BiomeSelector({onSensorClick, selectedSensors}: BiomeSelectorProps) {
                         }}
                         transform="translate(11.39 103.96)"
                     >
-                        <tspan x={0} y={0}>
+                        <tspan
+                            x={0}
+                            y={0}
+                        >
                             {'4'}
                         </tspan>
                     </text>
                 </g>
-                <g data-name="sensor-1" style={{cursor: 'pointer'}} onClick={() => onSensorClick(1)}>
+                <g
+                    data-name="sensor-1"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => onSensorClick(1)}
+                >
                     <path
                         d="M83.14 91.28h10.87v18.39H83.14z"
                         style={{
@@ -178,12 +189,19 @@ function BiomeSelector({onSensorClick, selectedSensors}: BiomeSelectorProps) {
                         }}
                         transform="translate(85.3 104.44)"
                     >
-                        <tspan x={0} y={0}>
+                        <tspan
+                            x={0}
+                            y={0}
+                        >
                             {'1'}
                         </tspan>
                     </text>
                 </g>
-                <g data-name="sensor-5" style={{cursor: 'pointer'}} onClick={() => onSensorClick(5)}>
+                <g
+                    data-name="sensor-5"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => onSensorClick(5)}
+                >
                     <path
                         d="M62.5 79.08h10.87v18.39H62.5z"
                         style={{
@@ -209,12 +227,19 @@ function BiomeSelector({onSensorClick, selectedSensors}: BiomeSelectorProps) {
                         }}
                         transform="translate(64.98 92.26)"
                     >
-                        <tspan x={0} y={0}>
+                        <tspan
+                            x={0}
+                            y={0}
+                        >
                             {'5'}
                         </tspan>
                     </text>
                 </g>
-                <g data-name="sensor-3" style={{cursor: 'pointer'}} onClick={() => onSensorClick(3)}>
+                <g
+                    data-name="sensor-3"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => onSensorClick(3)}
+                >
                     <path
                         d="M37.87 66.41h10.87V84.8H37.87z"
                         style={{
@@ -240,12 +265,19 @@ function BiomeSelector({onSensorClick, selectedSensors}: BiomeSelectorProps) {
                         }}
                         transform="translate(40.59 79.08)"
                     >
-                        <tspan x={0} y={0}>
+                        <tspan
+                            x={0}
+                            y={0}
+                        >
                             {'3'}
                         </tspan>
                     </text>
                 </g>
-                <g data-name="sensor-2" style={{cursor: 'pointer'}} onClick={() => onSensorClick(2)}>
+                <g
+                    data-name="sensor-2"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => onSensorClick(2)}
+                >
                     <path
                         d="M107.2 66.56h10.87v18.39H107.2z"
                         style={{
@@ -271,7 +303,10 @@ function BiomeSelector({onSensorClick, selectedSensors}: BiomeSelectorProps) {
                         }}
                         transform="translate(109.6 79.08)"
                     >
-                        <tspan x={0} y={0}>
+                        <tspan
+                            x={0}
+                            y={0}
+                        >
                             {'2'}
                         </tspan>
                     </text>

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { postPos, postRot } from './fudi';
-import { initialiseOscMappings, getSoundscape } from './sonification';
+import { getSoundscape, initialiseOscMappings } from './sonification';
 
 const router = Router();
 

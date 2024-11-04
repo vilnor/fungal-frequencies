@@ -58,7 +58,10 @@ function App() {
         }
     }, [timeRange]);
 
-    const { startSoundscape, stopSoundscape } = useSoundscape(startTime?.toISOString(), endTime?.toISOString(), timeRange === 'live');
+    const {
+        startSoundscape,
+        stopSoundscape,
+    } = useSoundscape(startTime?.toISOString(), endTime?.toISOString(), timeRange === 'live');
 
     const onStartSoundscape = useCallback(async () => {
         await startSoundscape();
@@ -77,8 +80,11 @@ function App() {
                     position="absolute"
                     elevation={0}
                 >
-                    <Toolbar sx={{gap: 1}}>
-                        <MushroomIcon sx={{ mr: 1 }} onClick={() => navigate('/')}/>
+                    <Toolbar sx={{ gap: 1 }}>
+                        <MushroomIcon
+                            sx={{ mr: 1 }}
+                            onClick={() => navigate('/')}
+                        />
                         <Typography
                             variant="h5"
                             component="div"

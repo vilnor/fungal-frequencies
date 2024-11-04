@@ -1,11 +1,10 @@
 import datetime
 import os
-from dotenv import load_dotenv
 
 import minimalmodbus
 import psycopg2
-
 import requests
+from dotenv import load_dotenv
 
 load_dotenv()
 

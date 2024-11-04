@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import { Autocomplete, Box, CircularProgress, Grid, TextField, Toolbar, Typography } from '@mui/material';
@@ -10,17 +10,17 @@ import BiomeSelector from './BiomeSelector';
 const currentTime = new Date();
 
 const TIME_OPTIONS = [
-    {label: 'Last hour', value: 'hour'},
-    {label: 'Last day', value: 'day'},
-    {label: 'Last week', value: 'week'},
-    {label: 'All', value: 'all'},
-    {label: 'Custom', value: 'custom'},
+    { label: 'Last hour', value: 'hour' },
+    { label: 'Last day', value: 'day' },
+    { label: 'Last week', value: 'week' },
+    { label: 'All', value: 'all' },
+    { label: 'Custom', value: 'custom' },
 ];
 type ChartSeries = {
     [k: string]: { name: string, data: any[], visible?: boolean }[]
 }
 
-function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
+function ChartView({ isMonitoring = false }: { isMonitoring?: boolean }) {
     const [timeRange, setTimeRange] = useState('day');
     const [startTime, setStartTime] = useState<Dayjs | null>(null);
     const [endTime, setEndTime] = useState<Dayjs | null>(null);
@@ -65,7 +65,7 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
 
     return (
         <>
-            <Toolbar sx={{justifyContent: 'flex-end', gap: 1, p: 3}}>
+            <Toolbar sx={{ justifyContent: 'flex-end', gap: 1, p: 3 }}>
                 {timeRange === 'custom' && (
                     <>
                         <DateTimePicker
@@ -94,7 +94,7 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                     value={TIME_OPTIONS.find(option => option.value === timeRange) ?? null}
                     onChange={(_, value) => setTimeRange(value?.value ?? 'day')}
                     options={TIME_OPTIONS}
-                    sx={{width: 300}}
+                    sx={{ width: 300 }}
                     size="small"
                     renderInput={
                         (params) => <TextField
@@ -104,17 +104,19 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                     }
                 />
             </Toolbar>
-            <Box sx={{
-                p: 5,
-                pt: 0,
-                height: '100%',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                overflow: 'auto',
-            }}>
-                {!isMonitoring && (<div style={{height: '100%', padding: '16px'}}>
+            <Box
+                sx={{
+                    p: 5,
+                    pt: 0,
+                    height: '100%',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    overflow: 'auto',
+                }}
+            >
+                {!isMonitoring && (<div style={{ height: '100%', padding: '16px' }}>
                     <BiomeSelector
                         onSensorClick={handleSensorClick}
                         selectedSensors={visibleSensors}
@@ -123,7 +125,10 @@ function ChartView({isMonitoring = false}: { isMonitoring?: boolean }) {
                     <CircularProgress size={75}/>
                 )}
                 {!isLoading && (isError || !data) && (
-                    <Typography variant="h5" color="grey">
+                    <Typography
+                        variant="h5"
+                        color="grey"
+                    >
                         No data available
                     </Typography>
                 )}
