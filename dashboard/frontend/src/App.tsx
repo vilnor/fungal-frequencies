@@ -7,6 +7,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import MushroomIcon from './MushroomIcon';
 
+/***
+ * This is the main application component.
+ * It provides the application bar and navigation.
+ */
 function App() {
     const [mode, setMode] = useState<PaletteMode>('light');
     const theme = useTheme(mode);

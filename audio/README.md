@@ -41,11 +41,11 @@ the web interface that allows users to control the audio spatialization and the 
     npm install
     npm start
     ```
-5. Run the frontend server with
+5. Build the frontend server with
     ```
     cd frontend
     npm install
-    npm start
+    npm run build
     ```
 6. Open a browser and navigate to http://localhost:8080 to control the audio spatialization
 

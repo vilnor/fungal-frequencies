@@ -14,6 +14,7 @@ conn = None
 cursor = None
 
 if data_endpoint_url is None:
+    # use a database instead
     conn = psycopg2.connect(database=os.environ["POSTGRES_DB"],
                             host=os.environ["POSTGRES_HOST"],
                             user=os.environ["POSTGRES_USER"],
@@ -28,7 +29,7 @@ def convert_values(values):
         "humidity": values[0] / 10,  # percentage
         "temperature": values[1] / 10,  # celsius
         "conductivity": values[2],  # us/cm
-        "ph": values[3] / 10,  # ph ??????
+        "ph": values[3] / 10,  # ph level
         "nitrogen": values[4],  # mg/kg
         "phosphorus": values[5],  # mg/kg
         "potassium": values[6],  # mg/kg
@@ -39,6 +40,7 @@ def convert_values(values):
 
 PORT = os.environ["SERIAL_PORT"]
 
+# setup the sensors
 sensor_1 = minimalmodbus.Instrument(PORT, 1, mode=minimalmodbus.MODE_RTU)
 sensor_2 = minimalmodbus.Instrument(PORT, 2, mode=minimalmodbus.MODE_RTU)
 sensor_3 = minimalmodbus.Instrument(PORT, 3, mode=minimalmodbus.MODE_RTU)
@@ -59,6 +61,7 @@ for sensor in sensors:
 timestamp = datetime.datetime.now().isoformat()
 sensor_data_list = []
 
+# collect and process sensor data
 for i, sensor in enumerate(sensors):
     raw_values = sensor.read_registers(0, number_of_registers=9)
     processed_values = convert_values(raw_values)
@@ -76,9 +79,10 @@ for i, sensor in enumerate(sensors):
                 f"INSERT INTO sensor_data (sensor_id, sensor_name, timestamp, sensor_value) VALUES ({i + 1}, '{key}', '{timestamp}', {value})")
 
 if data_endpoint_url is not None:
-    print(sensor_data_list)
+    # send data to the data endpoint
     res = requests.post(data_endpoint_url, json=sensor_data_list)
     print(res.text)
 
 if data_endpoint_url is None:
+    # otherwise commit the data to the database
     conn.commit()

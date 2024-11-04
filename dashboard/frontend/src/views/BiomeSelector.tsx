@@ -3,6 +3,11 @@ type BiomeSelectorProps = {
     selectedSensors: number[]
 }
 
+/***
+ * This is a custom SVG component that displays a biome selector.
+ * It allows the user to select sensors by clicking on them.
+ * The selected sensors are highlighted in black./
+ */
 function BiomeSelector({ onSensorClick, selectedSensors }: BiomeSelectorProps) {
     return (
         <svg

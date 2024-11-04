@@ -13,6 +13,7 @@ function fetcher<T>(...args: any[]): FetcherResponse<T> {
     return fetch(...args).then(res => res.json());
 }
 
+// This hook fetches data from the backend API.
 export default function useData<T = SensorData[]>(isMonitoring: boolean, sensorName?: string, startTime?: string, endTime?: string, format?: string) {
     const queryParams = useMemo(() => {
         const params = new URLSearchParams();

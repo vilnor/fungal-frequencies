@@ -5,6 +5,12 @@ import { select } from 'd3-selection';
 import usePostRot from '../api/useRot';
 import { PersonPin } from '@mui/icons-material';
 
+/***
+ * This component is a custom node that can be placed on the canvas.
+ * It is a user icon with a rotation handle that allows the user to rotate the node.
+ *
+ * On rotation, the node's new rotation value is sent to the backend.
+ */
 export default function RotatableNode({
     id,
     data,
@@ -41,7 +47,6 @@ export default function RotatableNode({
                     display: 'flex',
                     justifyContent: 'center',
                 }}
-                // className="custom-node"
             >
                 <div
                     ref={rotateControlRef}
@@ -51,9 +56,6 @@ export default function RotatableNode({
                     className={`nodrag rotateHandle`}
                 />
                 <PersonPin sx={{ color: '#000000', fontSize: '5rem' }}/>
-                {/*<div>*/}
-                {/*  {data.label}*/}
-                {/*</div>*/}
             </div>
         </>
     );

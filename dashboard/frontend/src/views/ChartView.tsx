@@ -20,6 +20,10 @@ type ChartSeries = {
     [k: string]: { name: string, data: any[], visible?: boolean }[]
 }
 
+/***
+ * This component displays the chart view of the data.
+ * It provides a toolbar to select the time range of the data.
+ */
 function ChartView({ isMonitoring = false }: { isMonitoring?: boolean }) {
     const [timeRange, setTimeRange] = useState('day');
     const [startTime, setStartTime] = useState<Dayjs | null>(null);

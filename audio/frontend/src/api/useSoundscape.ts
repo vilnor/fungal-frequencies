@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 const ENDPOINT = `${process.env.REACT_APP_API_URL}/api/soundscape`;
 
-
+// This function is a custom hook that starts and stops the soundscape.
 export default function useSoundscape(startTime?: string, endTime?: string, live?: boolean) {
     const queryParams = useMemo(() => {
         const params = new URLSearchParams();

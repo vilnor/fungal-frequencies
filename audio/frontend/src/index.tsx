@@ -5,6 +5,7 @@ import App from './App';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SpatialView from './views/SpatialView';
 
+// This is the main navigation router for the application.
 const router = createBrowserRouter([
     {
         path: '/',

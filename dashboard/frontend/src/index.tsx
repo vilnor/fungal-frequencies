@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ChartView from './views/ChartView';
 import TableView from './views/TableView';
 
+// This is the main navigation router for the application.
 const router = createBrowserRouter([
     {
         path: '/',

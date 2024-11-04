@@ -1,5 +1,6 @@
 import { SvgIcon, SvgIconProps } from '@mui/material';
 
+// This is a custom icon of a mushroom.
 function MushroomIcon(props: SvgIconProps) {
     return (
         <SvgIcon {...props}>

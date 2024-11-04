@@ -1,5 +1,9 @@
 import { Node, NodeProps } from '@xyflow/react';
 
+/***
+ * This component is a styled node that is static on the canvas.
+ * It is a custom designed sensor icon with a label.
+ */
 export default function SensorNode({
     id,
     data,

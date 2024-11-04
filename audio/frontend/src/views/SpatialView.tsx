@@ -78,6 +78,10 @@ const initialNodes = [
     },
 ];
 
+/**
+ * This component is a wrapper for ReactFlow that displays a spatial view of the sensors in the biome.
+ * It allows the user to drag the user icon to change their positioning in the generated soundscape.
+ */
 function SpatialView() {
 
     const { postPos } = usePostPos();

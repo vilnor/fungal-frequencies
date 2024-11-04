@@ -25,6 +25,7 @@ const SENSOR_UNITS = {
     default: '',
 };
 
+// This function transforms the sensor data into a format that can be used by Highcharts to minimize computation on the frontend.
 function transformDataToHighcharts(data: SensorDataBody[]): {
     [k: string]: { name: string, data: any[], color?: string }[]
 } {
@@ -52,6 +53,7 @@ function transformDataToHighcharts(data: SensorDataBody[]): {
     }, {});
 }
 
+// This function is a GET request handler that retrieves sensor data from the database.
 export async function getData(req: Request<any, any, any, SensorDataQueryParams>, res: Response) {
     const { startTime, endTime, format } = req.query;
 
@@ -87,6 +89,7 @@ export async function getData(req: Request<any, any, any, SensorDataQueryParams>
 }
 
 
+// This function is a GET request handler that retrieves monitoring data from the database.
 export async function getMonitoringData(req: Request<any, any, any, SensorDataQueryParams>, res: Response) {
     const { startTime, endTime, format } = req.query;
 
@@ -120,6 +123,7 @@ export async function getMonitoringData(req: Request<any, any, any, SensorDataQu
     res.send(rows);
 }
 
+// This function is a GET request handler that retrieves sensor data from the database.
 export async function getSensorData(req: Request, res: Response) {
     const { rows } = await pool.query(
         'SELECT * from sensor_data WHERE sensor_name = $1',
@@ -128,6 +132,7 @@ export async function getSensorData(req: Request, res: Response) {
     res.send(rows);
 }
 
+// This function is a POST request handler that saves sensor data to the database.
 export async function saveSensorData(req: Request<any, any, SensorDataBody>, res: Response) {
     const {
         sensor_id,
@@ -160,6 +165,7 @@ export async function saveSensorData(req: Request<any, any, SensorDataBody>, res
     res.send('ok');
 }
 
+// This function is a POST request handler that saves multiple rows of sensor data to the database.
 export async function saveSensorDataMulti(req: Request<any, any, SensorDataBody[]>, res: Response) {
     const data = req.body;
 
@@ -218,6 +224,7 @@ export async function saveSensorDataMulti(req: Request<any, any, SensorDataBody[
     res.send('ok');
 }
 
+// This function is a POST request handler that saves monitoring data to the database.
 export async function saveMonitoringDataMulti(req: Request<any, any, SensorDataBody[]>, res: Response) {
     const data = req.body;
 

@@ -1,6 +1,7 @@
 import { UDPPort } from 'osc';
 import { Request, Response } from 'express';
 
+// This enum is used to map sensor data to OSC parameters in VCV Rack.
 enum OSC_CONTROLS {
     RESET = 1,
     S1_TEMP = 2,
@@ -75,10 +76,12 @@ const client = new UDPPort({
 
 client.open();
 
+// This function normalizes a value between a minimum and maximum value.
 function normalizeValue(value: number, min: number, max: number) {
     return ((value - min) / (max - min));
 }
 
+// This function creates an OSC message with a parameter ID and value.
 function createOSCMessage(oscParameter: number, oscValue: number): OSCMessage {
     return {
         address: '/fader',
@@ -95,6 +98,7 @@ function createOSCMessage(oscParameter: number, oscValue: number): OSCMessage {
     };
 }
 
+// This function maps a sensor value to an OSC message based on the sensor ID and name.
 function mapSensorValueToOSCMessage(sensorId: number, sensorName: string, sensorValue: number): OSCMessage | null {
     switch (sensorId) {
         case 1:
@@ -190,6 +194,7 @@ function mapSensorValueToOSCMessage(sensorId: number, sensorName: string, sensor
 let playingSoundscape = false;
 let liveSoundscape = false;
 
+// This function generates a soundscape for a given set of sensor data.
 async function generateSoundscapeForData(data: SensorData[]) {
 
     const transformedData: { [timestamp: string]: OSCMessage[] } = {};
@@ -222,6 +227,7 @@ async function generateSoundscapeForData(data: SensorData[]) {
     console.log('done');
 }
 
+// This function handles the live soundscape by fetching data every minute.
 async function handleLiveSoundscape() {
     if (!liveSoundscape) {
         return;
@@ -250,6 +256,7 @@ type SoundscapeQueryParams = {
     action?: 'start' | 'stop' | 'live'
 }
 
+// This function is a GET request handler that generates a soundscape for a given time range.
 export async function getSoundscape(req: Request<any, any, any, SoundscapeQueryParams>, res: Response) {
     let { startTime, endTime, action } = req.query;
     if (action === 'start' && playingSoundscape) {
@@ -290,6 +297,7 @@ function isNumber(x: any): x is number {
     return typeof x === 'number';
 }
 
+// This function is a GET request handler that initialises the OSC mappings for the VCV Rack patch.
 export function initialiseOscMappings(req: Request, res: Response) {
     const messages = Object.values(OSC_CONTROLS).filter(isNumber).map((control) => createOSCMessage(control, 1));
     messages.forEach((message) => {

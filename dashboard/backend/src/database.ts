@@ -1,6 +1,6 @@
 import { Pool } from 'pg';
 
-// connection settings are handled by env variables
+// Connection settings are handled by env variables
 const pool = new Pool();
 
 pool.query('CREATE TABLE IF NOT EXISTS sensor_data (\n' +

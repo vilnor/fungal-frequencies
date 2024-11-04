@@ -32,6 +32,11 @@ const TIME_OPTIONS = [
     { label: 'Custom', value: 'custom' },
 ];
 
+/***
+ * This is the main application component.
+ * It provides the application bar and navigation, and manages the time range for the soundscape.
+ * It also provides the controls to start and stop the soundscape.
+ */
 function App() {
     const [mode, setMode] = useState<PaletteMode>('light');
     const theme = useTheme(mode);

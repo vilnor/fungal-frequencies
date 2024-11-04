@@ -23,6 +23,10 @@ const TIME_OPTIONS = [
     { label: 'Custom', value: 'custom' },
 ];
 
+/***
+ * This component displays the table view of the data.
+ * It provides a toolbar to select the time range of the data.
+ */
 function TableView({ isMonitoring = false }: { isMonitoring?: boolean }) {
     // const { data, isError, isLoading } = useData();
     const [timeRange, setTimeRange] = useState('day');
